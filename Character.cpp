@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <Urho3D/Core/Context.h>
 #include <Urho3D/Graphics/AnimationController.h>
 #include <Urho3D/IO/MemoryBuffer.h>
@@ -19,6 +21,9 @@ Character::Character(Context* context) :
 	LogicComponent(context),
 	onGround_(false),
 	okToJump_(true),
+	onLeftLane_(false),
+	onMiddleLane_(true),
+	onRightLane_(false),
 	inAirTimer_(0.0f)
 {
 	// Only the physics update event is needed: unsubscribe from the rest for optimization
@@ -74,80 +79,47 @@ void Character::FixedUpdate(float timeStep)
 		moveDir += Vector3::FORWARD;
 	/*if (controls_.IsDown(CTRL_BACK))
 	moveDir += Vector3::BACK;*/
+
+	if (body->GetPosition().x_ >= 1.5f)
+	{
+		onLeftLane_ = false;
+		onMiddleLane_ = false;
+		onRightLane_ = true;
+	}
+	else if (body->GetPosition().x_ <= -1.5f)
+	{
+		onLeftLane_ = true;
+		onMiddleLane_ = false;
+		onRightLane_ = false;
+	}
+	else {
+		onLeftLane_ = false;
+		onMiddleLane_ = true;
+		onRightLane_ = false;
+	}
+	std::cout << "LeftLane = " << onLeftLane_ << std::endl;
+	std::cout << "MiddleLane = " << onMiddleLane_ << std::endl;
+	std::cout << "RightLane = " << onRightLane_ << std::endl;
 	if (controls_.IsDown(CTRL_RIGHT))
 	{
-		moveDir += Vector3::RIGHT;////////////////////
+		if (okToJump_ && onRightLane_ == false)
+		{
+			body->ApplyImpulse(Vector3(0.4f, 0.8f, 0.0f));
+			okToJump_ = false;
+		}
 
-								  //body->SetPosition((body->GetPosition()) + Vector3::RIGHT * 2);
-								  /*
-								  if ((body->GetPosition()).x_ >= 3.0f)
-								  {
-								  instructionText->SetPosition(70.0f, ui->GetRoot()->GetHeight() / 4);
-								  }
-								  else if ((body->GetPosition()).x_ < 3.0f && (body->GetPosition()).x_ > -3.0f)
-								  {
-								  //body->SetPosition((body->GetPosition()) + Vector3::RIGHT * 2);
-								  body->SetPosition(Vector3(3.0f, (body->GetPosition()).y_, (body->GetPosition()).z_));
-								  }
-								  else {
-								  //body->SetPosition((body->GetPosition()) + Vector3::RIGHT * 2);
-								  body->SetPosition(Vector3(0.0f, (body->GetPosition()).y_, (body->GetPosition()).z_));
-								  }
-								  */
-								  /*if (onMiddleLane_)
-								  {
-								  onMiddleLane_ = false;
-								  moveDir += Vector3::RIGHT * 15;
-								  onRightLane_ = true;
+		//moveDir += Vector3::RIGHT;////////////////////
 
-								  }
-								  else if (onLeftLane_)
-								  {
-								  onLeftLane_ = false;
-								  moveDir += Vector3::RIGHT * 15;
-								  onMiddleLane_ = true;
-
-								  }*/
 	}
 
 	if (controls_.IsDown(CTRL_LEFT))
 	{
-		moveDir += Vector3::LEFT;
-		//body->SetPosition((body->GetPosition()) + Vector3::LEFT * 2);
-		//if ((body->GetPosition()).x_ <= 2.0f)
-		//{
-		//	
-		//	//instructionText->SetPosition(70.0f, ui->GetRoot()->GetHeight() / 4);
-		//}
-		//else if ((body->GetPosition()).x_ < 2.0f && (body->GetPosition()).x_ > -2.0f)
-		//{
-		//	//body->ApplyImpulse(Vector3::LEFT * 2 * MOVE_FORCE);
-		//	body->SetPosition((body->GetPosition()) + Vector3::LEFT * 2);
-		//	//moveDir += Vector3::LEFT * 15;
-		//}
-		//else {
-		//	body->SetPosition((body->GetPosition()) + Vector3::LEFT * 2);
-		//}
-		/*if (onLeftLane_)
+		//moveDir += Vector3::LEFT;
+		if (okToJump_ && onLeftLane_ == false)
 		{
-		instructionText->SetPosition(-70.0f, ui->GetRoot()->GetHeight() / 4);
+			body->ApplyImpulse(Vector3(-0.4f,0.8f,0.0f));
+			okToJump_ = false;
 		}
-		if(onMiddleLane_)
-		{
-		onMiddleLane_ = false;
-		moveDir += Vector3::LEFT*15;
-		onLeftLane_ = true;
-
-		}
-		else if (onRightLane_)
-		{
-		onRightLane_ = false;
-		moveDir += Vector3::LEFT * 15;
-		onMiddleLane_ = true;
-
-		}*/
-
-
 	}
 
 
@@ -171,7 +143,7 @@ void Character::FixedUpdate(float timeStep)
 			{
 				body->ApplyImpulse(Vector3::UP * JUMP_FORCE);
 				okToJump_ = false;
-				animCtrl->PlayExclusive("Models/Mutant/Mutant_Jump1.ani", 0, false, 0.2f);
+				//animCtrl->PlayExclusive("Models/Kachujin/jump.bvh", 0, false, 0.2f);
 			}
 		}
 		else
@@ -182,16 +154,16 @@ void Character::FixedUpdate(float timeStep)
 
 	if (!onGround_)
 	{
-		animCtrl->PlayExclusive("Models/Mutant/Mutant_Jump1.ani", 0, false, 0.2f);
+		animCtrl->PlayExclusive("Models/Kachujin/jump.bvh", 0, false, 0.2f);
 	}
 	else
 	{
 		if (softGrounded && !moveDir.Equals(Vector3::ZERO))
-			animCtrl->PlayExclusive("Models/Mutant/Mutant_Run.ani", 0, true, 0.2f);
+			animCtrl->PlayExclusive("Models/Kachujin/Kachujin_Walk.ani", 0, true, 0.2f);
 		else
-			animCtrl->Stop("Models/Mutant/Mutant_Run.ani", 0.2f);
+			animCtrl->Stop("Models/Kachujin/Kachujin_Walk.ani", 0.2f);
 		// Set walk animation speed proportional to velocity
-		animCtrl->SetSpeed("Models/Mutant/Mutant_Run.ani", planeVelocity.Length() * 0.3f);
+		animCtrl->SetSpeed("Models/Kachujin/Kachujin_Walk.ani", planeVelocity.Length() * 0.3f);
 	}
 	// Reset grounded flag for next frame
 	onGround_ = false;

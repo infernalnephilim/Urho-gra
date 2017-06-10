@@ -186,7 +186,7 @@ void MainScene::CreateScene()
 	for (unsigned i = 0; i < NUM_BOXES; ++i)
 	{
 		Node* objectNode = scene_->CreateChild("Box");
-		objectNode->SetPosition(Vector3((int(Random(3.0f) - 1.0f))*3.0f - 3.0f, 0.75f, (Random(90.0f) + 5.0f) * 4));
+		objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 3,0.75f, int(Random(90.0f) + 5.0f) * 4));
 		objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
 		objectNode->SetScale(1.5f);
 		StaticModel* object5 = objectNode->CreateComponent<StaticModel>();
@@ -205,20 +205,31 @@ void MainScene::CreateScene()
 	const unsigned NUM_CARROTS = 30;
 	for (unsigned i = 0; i < NUM_CARROTS; ++i)
 	{
-	Node* carrotNode = scene_->CreateChild("Carrot");
-	carrotNode->SetPosition(Vector3((int(Random(3.0f) - 1.0f))*3.0f - 3.0f, 0.75f, (Random(90.0f) + 5.0f) * 4));
-	carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
-	carrotNode->SetScale(0.2f);
-	StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
-	carrot->SetModel(cache->GetResource<Model>("Models/marchew/Models/marchewka.mdl"));
-	carrot->SetMaterial(cache->GetResource<Material>("Models/marchew/Materials/orangeM.xml"));
-	carrot->SetCastShadows(true);
+		std::cout << "Rand: " << int(Random(90.0f) + 5.0f) * 4 << std::endl;
 
-	RigidBody* carrotBody = carrotNode->CreateComponent<RigidBody>();
-	carrotBody->SetCollisionLayer(2);
-	CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
-	carrotShape->SetBox(Vector3::ONE);
+		Node* carrotNode = scene_->CreateChild("Carrot");
+		carrotNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.75f, int(Random(90.0f) + 5.0f) * 2));
+		carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
+		carrotNode->SetScale(0.2f);
+		StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
+		carrot->SetModel(cache->GetResource<Model>("Models/marchew/Models/marchewka.mdl"));
+		carrot->SetMaterial(cache->GetResource<Material>("Models/marchew/Materials/orangeM.xml"));
+		carrot->SetCastShadows(true);
+
+		RigidBody* carrotBody = carrotNode->CreateComponent<RigidBody>();
+		carrotBody->SetCollisionLayer(2);
+		CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
+		carrotShape->SetBox(Vector3::ONE);
 	}	
+
+	Node* objectNode2 = scene_->CreateChild("Bab");
+	objectNode2->SetPosition(Vector3(0.0f, 1.75f, 30.0f));
+	//objectNode2->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
+	objectNode2->SetScale(1.0f);
+	StaticModel* object52 = objectNode2->CreateComponent<AnimatedModel>();
+	object52->SetModel(cache->GetResource<Model>("Models/babuszka/inna/Models/Babuszka.mdl"));
+	//object52->SetMaterial(cache->GetResource<Material>("Materials/Water.xml"));
+	object52->SetCastShadows(true);
 }
 
 void MainScene::CreateCharacter() {
@@ -226,18 +237,18 @@ void MainScene::CreateCharacter() {
 
 	Node* objectNode = scene_->CreateChild("Jack");
 	objectNode->SetPosition(Vector3(0.0f, 1.1f, 0.0f));
-	//objectNode->SetScale(Vector3(1.0f, 1.0f, 1.0f));
-	//objectNode->SetRotation(Quaternion(90, Vector3(0, 1, 0)));
+	//objectNode->SetScale(Vector3(0.1f, 0.1f, 0.1f));
+	objectNode->SetRotation(Quaternion(90.0f, 0.0f, 0.0f));
 
 	// Create the rendering component + animation controller
 	AnimatedModel* object = objectNode->CreateComponent<AnimatedModel>();
-	object->SetModel(cache->GetResource<Model>("Models/Mutant/Mutant.mdl"));
-	object->SetMaterial(cache->GetResource<Material>("Models/Mutant/Materials/mutant_M.xml"));
+	object->SetModel(cache->GetResource<Model>("Models/Kachujin/Kachujin.mdl"));
+	object->SetMaterial(cache->GetResource<Material>("Models/Kachujin/Materials/Kachujin.xml"));
 	object->SetCastShadows(true);
 	objectNode->CreateComponent<AnimationController>();
 
 	// Set the head bone for manual control
-	object->GetSkeleton().GetBone("Mutant:Head")->animated_ = false;
+	//object->GetSkeleton().GetBone("Mutant:Head")->animated_ = false;
 
 	// Create rigidbody, and set non-zero mass so that the body becomes dynamic
 	RigidBody* body = objectNode->CreateComponent<RigidBody>();
@@ -272,6 +283,9 @@ void MainScene::SubscribeToEvents()
 	SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(MainScene, HandlePostUpdate));
 	SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(MainScene, HandlePostRenderUpdate));
 	// Unsubscribe the SceneUpdate event from base class as the camera node is being controlled in HandlePostUpdate() in this sample
+	
+	//SubscribeToEvent(GetNode(), E_NODECOLLISIONSTART, HANDLER(MyLogicObject, HandleNodeCollisionStart));
+
 	UnsubscribeFromEvent(E_SCENEUPDATE);
 }
 
