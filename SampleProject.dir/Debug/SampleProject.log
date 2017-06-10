@@ -1,0 +1,25 @@
+﻿  Character.cpp
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): warning C4005: 'URHO3D_STATIC_DEFINE': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): note: command-line arguments:  see previous definition of 'URHO3D_STATIC_DEFINE'
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): warning C4005: 'URHO3D_D3D11': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): note: command-line arguments:  see previous definition of 'URHO3D_D3D11'
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): warning C4005: 'URHO3D_SSE': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): note: command-line arguments:  see previous definition of 'URHO3D_SSE'
+  MainScene.cpp
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): warning C4005: 'URHO3D_STATIC_DEFINE': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): note: command-line arguments:  see previous definition of 'URHO3D_STATIC_DEFINE'
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): warning C4005: 'URHO3D_D3D11': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): note: command-line arguments:  see previous definition of 'URHO3D_D3D11'
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): warning C4005: 'URHO3D_SSE': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): note: command-line arguments:  see previous definition of 'URHO3D_SSE'
+MainScene.cpp(397): warning C4305: '+=': truncation from 'double' to 'float'
+  Touch.cpp
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): warning C4005: 'URHO3D_STATIC_DEFINE': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): note: command-line arguments:  see previous definition of 'URHO3D_STATIC_DEFINE'
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): warning C4005: 'URHO3D_D3D11': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): note: command-line arguments:  see previous definition of 'URHO3D_D3D11'
+F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): warning C4005: 'URHO3D_SSE': macro redefinition
+  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): note: command-line arguments:  see previous definition of 'URHO3D_SSE'
+  Generating Code...
+     Creating library F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/Debug/SampleProject_d.lib and object F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/Debug/SampleProject_d.exp
+  SampleProject.vcxproj -> F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\bin\SampleProject_d.exe

@@ -1,0 +1,34 @@
+# CMake generation dependency list for this directory.
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeLists.txt
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/3.8.0-rc1/CMakeSystem.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeSystemSpecificInitialize.cmake
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/3.8.0-rc1/CMakeCCompiler.cmake
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/3.8.0-rc1/CMakeCXXCompiler.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeSystemSpecificInformation.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeGenericSystem.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/Platform/Windows.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/Platform/WindowsPaths.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeCInformation.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeLanguageInformation.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/Platform/Windows-MSVC-C.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/Platform/Windows-MSVC.cmake
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/3.8.0-rc1/CMakeRCCompiler.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeRCInformation.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeCommonLanguageInclude.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeCXXInformation.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeLanguageInformation.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/Compiler/MSVC-CXX.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/Platform/Windows-MSVC-CXX.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/Platform/Windows-MSVC.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeCommonLanguageInclude.cmake
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMake/Modules/Urho3D-CMake-common.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeDependentOption.cmake
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMake/Modules/FindDirect3D.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/FindPackageMessage.cmake
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMake/Modules/GenerateExportHeader.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeParseArguments.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CheckCXXCompilerFlag.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CheckCXXSourceCompiles.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMake/Modules/FindUrho3D.cmake
+F:/Programy/CMake/share/cmake-3.8/Modules/FindPackageMessage.cmake

@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{CCD8EE24-498C-32CF-8527-0E7B6F168F57}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>ZERO_CHECK</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+ <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+ <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+ <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+     <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    </PropertyGroup>
+ <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty\Bullet;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty\Lua;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+ <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty\Bullet;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty\Lua;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+ <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty\Bullet;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D\ThirdParty\Lua;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\58b16464618c0643bbbda4da1d15efaa\generate.stamp.rule">
+     <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Checking Build System</Message>
+     <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+F:\Programy\CMake\bin\cmake.exe "-HF:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry" "-BF:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/SampleProject.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+     <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/58b16464618c0643bbbda4da1d15efaa/generate.stamp.rule;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\FindDirect3D.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\FindUrho3D.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\GenerateExportHeader.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\Urho3D-CMake-common.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeCCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeCXXCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeRCCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeSystem.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeLists.txt;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCXXInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCommonLanguageInclude.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeDependentOption.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeGenericSystem.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeLanguageInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeParseArguments.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeRCInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeSystemSpecificInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeSystemSpecificInitialize.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CheckCXXCompilerFlag.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CheckCXXSourceCompiles.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Compiler\MSVC-CXX.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\FindPackageMessage.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC-C.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC-CXX.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+     <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\generate.stamp</Outputs>
+     <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+     <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Checking Build System</Message>
+     <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+F:\Programy\CMake\bin\cmake.exe "-HF:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry" "-BF:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/SampleProject.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+     <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/58b16464618c0643bbbda4da1d15efaa/generate.stamp.rule;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\FindDirect3D.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\FindUrho3D.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\GenerateExportHeader.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\Urho3D-CMake-common.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeCCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeCXXCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeRCCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeSystem.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeLists.txt;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCXXInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCommonLanguageInclude.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeDependentOption.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeGenericSystem.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeLanguageInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeParseArguments.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeRCInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeSystemSpecificInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeSystemSpecificInitialize.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CheckCXXCompilerFlag.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CheckCXXSourceCompiles.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Compiler\MSVC-CXX.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\FindPackageMessage.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC-C.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC-CXX.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+     <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\generate.stamp</Outputs>
+     <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+     <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Checking Build System</Message>
+     <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+F:\Programy\CMake\bin\cmake.exe "-HF:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry" "-BF:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/SampleProject.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+     <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/58b16464618c0643bbbda4da1d15efaa/generate.stamp.rule;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\FindDirect3D.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\FindUrho3D.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\GenerateExportHeader.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMake\Modules\Urho3D-CMake-common.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeCCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeCXXCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeRCCompiler.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\3.8.0-rc1\CMakeSystem.cmake;F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeLists.txt;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCXXInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeCommonLanguageInclude.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeDependentOption.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeGenericSystem.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeLanguageInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeParseArguments.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeRCInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeSystemSpecificInformation.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CMakeSystemSpecificInitialize.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CheckCXXCompilerFlag.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\CheckCXXSourceCompiles.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Compiler\MSVC-CXX.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\FindPackageMessage.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC-C.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC-CXX.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows-MSVC.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\Windows.cmake;F:\Programy\CMake\share\cmake-3.8\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+     <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\CMakeFiles\generate.stamp</Outputs>
+     <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

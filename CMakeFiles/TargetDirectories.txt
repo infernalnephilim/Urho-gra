@@ -1,0 +1,3 @@
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/SampleProject.dir
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/ALL_BUILD.dir
+F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/CMakeFiles/ZERO_CHECK.dir
