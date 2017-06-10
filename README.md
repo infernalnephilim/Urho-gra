@@ -1,3 +1,3 @@
-# Urho Sample Project
+# Projekt gry w Urho3D
 
-Relativly simple Urho example project. Does not require C++11.
+Endless Runner w Urho3D
