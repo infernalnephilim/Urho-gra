@@ -18,6 +18,7 @@ class MainScene : public App
 public:
 	SharedPtr<Text> text_;
 	SharedPtr<Text> text2_;
+	SharedPtr<Text> gameOverText_;
 	float time_;
 	float characterPositionX;
 	float characterPositionZ;
@@ -42,6 +43,7 @@ private:
 	/// Handle application post-update. Update camera position after character has moved.
 	void HandlePostUpdate(StringHash eventType, VariantMap& eventData);
 	void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
+
 
 	/// Touch utility object.
 	SharedPtr<Touch> touch_;

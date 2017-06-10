@@ -39,11 +39,11 @@ public:
 
 	/// Movement controls. Assigned by the main program each frame.
 	Controls controls_;
+	bool gameOver_;
 
 private:
 	/// Handle physics collision event.
 	void HandleNodeCollision(StringHash eventType, VariantMap& eventData);
-
 	/// Grounded flag for movement.
 	bool onGround_;
 	/// Jump flag.
@@ -55,4 +55,6 @@ private:
 	bool onMiddleLane_;
 	bool onRightLane_;
 
+
+	
 };

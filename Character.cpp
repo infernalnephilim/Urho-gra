@@ -24,6 +24,7 @@ Character::Character(Context* context) :
 	onLeftLane_(false),
 	onMiddleLane_(true),
 	onRightLane_(false),
+	gameOver_(false),
 	inAirTimer_(0.0f)
 {
 	// Only the physics update event is needed: unsubscribe from the rest for optimization
@@ -79,33 +80,91 @@ void Character::FixedUpdate(float timeStep)
 		moveDir += Vector3::FORWARD;
 	/*if (controls_.IsDown(CTRL_BACK))
 	moveDir += Vector3::BACK;*/
-
+	
 	if (body->GetPosition().x_ >= 1.5f)
 	{
 		onLeftLane_ = false;
 		onMiddleLane_ = false;
 		onRightLane_ = true;
+		
+		if (okToJump_ == true) {
+			body->ApplyImpulse(Vector3(3.0f - body->GetPosition().x_, 0.0f, 0.0f));
+		}
+		
 	}
 	else if (body->GetPosition().x_ <= -1.5f)
 	{
 		onLeftLane_ = true;
 		onMiddleLane_ = false;
 		onRightLane_ = false;
+		
+		
+		if (okToJump_ == true) {
+			body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
+		}
+		
 	}
 	else {
 		onLeftLane_ = false;
 		onMiddleLane_ = true;
 		onRightLane_ = false;
+		
+		if (okToJump_ == true) {
+			body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
+		}
+		
 	}
+	
+	/*
+	if (onLeftLane_ == true)
+	{
+		if (okToJump_ == true) {
+			body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
+		}
+	}
+	else if (onMiddleLane_ == true) 
+	{
+		if (okToJump_ == true) {
+			body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
+		}
+	}
+	else if (onRightLane_ == true) 
+	{
+		if (okToJump_ == true) {
+			body->ApplyImpulse(Vector3(3.0f - body->GetPosition().x_, 0.0f, 0.0f));
+		}
+	}
+	*/
+	/*
 	std::cout << "LeftLane = " << onLeftLane_ << std::endl;
 	std::cout << "MiddleLane = " << onMiddleLane_ << std::endl;
 	std::cout << "RightLane = " << onRightLane_ << std::endl;
+	*/
+	
 	if (controls_.IsDown(CTRL_RIGHT))
 	{
 		if (okToJump_ && onRightLane_ == false)
 		{
-			body->ApplyImpulse(Vector3(0.4f, 0.8f, 0.0f));
+			body->ApplyImpulse(Vector3(0.5f, 0.8f, 0.1f));
 			okToJump_ = false;
+			
+			/*
+			if (onMiddleLane_ == true) {
+				onMiddleLane_ = false;
+				onRightLane_ = true;
+
+				if (okToJump_ == true) {
+					body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
+				}
+			}
+			else if (onLeftLane_ == true) {
+				onLeftLane_ = false;
+				onMiddleLane_ = true;
+				if (okToJump_ == true) {
+					body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
+				}
+			}
+			*/
 		}
 
 		//moveDir += Vector3::RIGHT;////////////////////
@@ -117,8 +176,23 @@ void Character::FixedUpdate(float timeStep)
 		//moveDir += Vector3::LEFT;
 		if (okToJump_ && onLeftLane_ == false)
 		{
-			body->ApplyImpulse(Vector3(-0.4f,0.8f,0.0f));
+			body->ApplyImpulse(Vector3(-0.5f,0.8f,0.1f));
 			okToJump_ = false;
+			/*
+			if (onMiddleLane_ == true) {
+				onMiddleLane_ = false;
+				onLeftLane_ = true;
+				if (okToJump_ == true) {
+					body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
+				}
+			} else if(onRightLane_ == true){
+				onRightLane_ = false;
+				onMiddleLane_ = true;
+				if (okToJump_ == true) {
+					body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
+				}
+			}
+			*/
 		}
 	}
 
@@ -143,7 +217,7 @@ void Character::FixedUpdate(float timeStep)
 			{
 				body->ApplyImpulse(Vector3::UP * JUMP_FORCE);
 				okToJump_ = false;
-				//animCtrl->PlayExclusive("Models/Kachujin/jump.bvh", 0, false, 0.2f);
+				//animCtrl->PlayExclusive("bin/Data/Models/Kachujin/jump.bvh", 0, false, 0.2f);
 			}
 		}
 		else
@@ -154,7 +228,7 @@ void Character::FixedUpdate(float timeStep)
 
 	if (!onGround_)
 	{
-		animCtrl->PlayExclusive("Models/Kachujin/jump.bvh", 0, false, 0.2f);
+		//animCtrl->PlayExclusive("bin/Data/Models/Kachujin/jump.bvh", 0, false, 0.2f);
 	}
 	else
 	{
@@ -174,6 +248,17 @@ void Character::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
 	// Check collision contacts and see if character is standing on ground (look for a contact that has near vertical normal)
 	using namespace NodeCollision;
 
+	RigidBody* otherBody = (RigidBody*)eventData[P_OTHERBODY].GetPtr();
+	Node* otherNode = (Node*)eventData[P_OTHERNODE].GetPtr();
+
+	// If the other collision shape belongs to static geometry, perform world collision
+
+	if (otherBody->GetCollisionLayer() == 3) {
+		std::cout << "Kolizja z box" << std::endl;
+		gameOver_ = true;
+	}
+
+
 	MemoryBuffer contacts(eventData[P_CONTACTS].GetBuffer());
 
 	while (!contacts.IsEof())
@@ -190,5 +275,7 @@ void Character::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
 			if (level > 0.75)
 				onGround_ = true;
 		}
+
+		//std::cout << "CONTACTS = " << contactPosition.x_ << " " << contactPosition.y_ << " " << contactPosition.z_ << std::endl;
 	}
 }

@@ -142,19 +142,24 @@ void MainScene::CreateScene()
 	skybox->SetMaterial(cache->GetResource<Material>("Materials/Skybox.xml"));
 
 	// Create the floor object
-	Node* floorNode = scene_->CreateChild("Floor");
-	floorNode->SetPosition(Vector3(0.0f, -0.5f, 100.0f));
-	floorNode->SetScale(Vector3(100.0f, 1.0f, 200.0f));
-	StaticModel* object = floorNode->CreateComponent<StaticModel>();
-	object->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-	object->SetMaterial(cache->GetResource<Material>("Materials/Terrain.xml"));
+	const unsigned NUM_FLOOR = 30;
+	for (unsigned i = 0; i < NUM_FLOOR; ++i)
+	{
+		Node* floorNode = scene_->CreateChild("Floor");
+		floorNode->SetPosition(Vector3(0.0f, -0.5f, 5.0f + 10.0f * i));
+		floorNode->SetScale(Vector3(10.0f, 1.0f, 10.0f));
+		StaticModel* object = floorNode->CreateComponent<StaticModel>();
+		object->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+		object->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/pathM.xml"));
 
-	RigidBody* body = floorNode->CreateComponent<RigidBody>();
-	// Use collision layer bit 2 to mark world scenery. This is what we will raycast against to prevent camera from going
-	// inside geometry
-	body->SetCollisionLayer(2);
-	CollisionShape* shape = floorNode->CreateComponent<CollisionShape>();
-	shape->SetBox(Vector3::ONE);
+		RigidBody* body = floorNode->CreateComponent<RigidBody>();
+		// Use collision layer bit 2 to mark world scenery. This is what we will raycast against to prevent camera from going
+		// inside geometry
+		body->SetCollisionLayer(2);
+		CollisionShape* shape = floorNode->CreateComponent<CollisionShape>();
+		shape->SetBox(Vector3::ONE);
+	}
+
 
 	Node* leftWallNode = scene_->CreateChild("LeftWall");
 	leftWallNode->SetPosition(Vector3(-4.5f, 2.0f, 100.0f));
@@ -188,14 +193,14 @@ void MainScene::CreateScene()
 		Node* objectNode = scene_->CreateChild("Box");
 		objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 3,0.75f, int(Random(90.0f) + 5.0f) * 4));
 		objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
-		objectNode->SetScale(1.5f);
+		objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
 		StaticModel* object5 = objectNode->CreateComponent<StaticModel>();
 		object5->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 		object5->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
 		object5->SetCastShadows(true);
 
 		RigidBody* body5 = objectNode->CreateComponent<RigidBody>();
-		body5->SetCollisionLayer(2);
+		body5->SetCollisionLayer(3);
 		// Bigger boxes will be heavier and harder to move
 		//body5->SetMass(20.0f);
 		CollisionShape* shape5 = objectNode->CreateComponent<CollisionShape>();
@@ -205,7 +210,6 @@ void MainScene::CreateScene()
 	const unsigned NUM_CARROTS = 30;
 	for (unsigned i = 0; i < NUM_CARROTS; ++i)
 	{
-		std::cout << "Rand: " << int(Random(90.0f) + 5.0f) * 4 << std::endl;
 
 		Node* carrotNode = scene_->CreateChild("Carrot");
 		carrotNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.75f, int(Random(90.0f) + 5.0f) * 2));
@@ -227,7 +231,7 @@ void MainScene::CreateScene()
 	//objectNode2->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
 	objectNode2->SetScale(1.0f);
 	StaticModel* object52 = objectNode2->CreateComponent<AnimatedModel>();
-	object52->SetModel(cache->GetResource<Model>("Models/babuszka/inna/Models/Babuszka.mdl"));
+	object52->SetModel(cache->GetResource<Model>("Models/babuszka/Babuszka.mdl"));
 	//object52->SetMaterial(cache->GetResource<Material>("Materials/Water.xml"));
 	object52->SetCastShadows(true);
 }
@@ -407,34 +411,54 @@ void MainScene::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 
 	Node* characterNode = character_->GetNode();
 
-	// update wyswietlanego score
-	time_ += 0.01;
-	std::string str;
-	str.append("Score: ");
-	str.append(std::to_string(int(time_ * 10)));
-	String s(str.c_str(), str.size());
-	text_->SetText(s);
+	////////////// GAME OVER /////////////////////
+	if (character_->gameOver_ == true) {
+		scene_->SetUpdateEnabled(false);
+		//std::cout << character_->gameOver_ << std::endl;
 
-	// update wyswietlanej pozycji bohatera
-	std::string str2;
-	str2.append("posX: ");
-	str2.append(std::to_string(int(characterNode->GetPosition().x_)));
-	str2.append(" posY: ");
-	str2.append(std::to_string(int(characterNode->GetPosition().y_)));
-	str2.append(" posZ: ");
-	str2.append(std::to_string(int(characterNode->GetPosition().z_)));
-	String s2(str2.c_str(), str2.size());
-	text2_->SetText(s2);
+		ResourceCache* cache = GetSubsystem<ResourceCache>();
+		GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
+		gameOverText_ = new Text(context_);	
+		gameOverText_->SetText("Game Over");	
+		gameOverText_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 50);
+		gameOverText_->SetColor(Color(1, 1, 1));
+		gameOverText_->SetHorizontalAlignment(HA_CENTER);
+		gameOverText_->SetVerticalAlignment(VA_CENTER);
+		GetSubsystem<UI>()->GetRoot()->AddChild(gameOverText_);
+	}
+	else {
+		// update wyswietlanego score
+		time_ += 0.01;
+		std::string str;
+		str.append("Score: ");
+		str.append(std::to_string(int(time_ * 10)));
+		String s(str.c_str(), str.size());
+		text_->SetText(s);
+
+		// update wyswietlanej pozycji bohatera
+		std::string str2;
+		str2.append("posX: ");
+		str2.append(std::to_string(int(characterNode->GetPosition().x_)));
+		str2.append(" posY: ");
+		str2.append(std::to_string(int(characterNode->GetPosition().y_)));
+		str2.append(" posZ: ");
+		str2.append(std::to_string(int(characterNode->GetPosition().z_)));
+		String s2(str2.c_str(), str2.size());
+		text2_->SetText(s2);
+	}
+	
+
+	
 
 
 
 
 	// Get camera lookat dir from character yaw + pitch
 	Quaternion rot = characterNode->GetRotation();
-	Quaternion dir = rot * Quaternion(character_->controls_.pitch_, Vector3::RIGHT);
+	Quaternion dir = rot * Quaternion(character_->controls_.pitch_+15.0f, Vector3::RIGHT);
 
 	// Third person camera: position behind the character
-	Vector3 aimPoint = characterNode->GetPosition() + rot * Vector3(0.0f, 2.2f, -1.0f);
+	Vector3 aimPoint = characterNode->GetPosition() + rot * Vector3(0.0f, 2.8f, -1.1f);
 
 	// Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly
 	Vector3 rayDir = dir * Vector3::BACK;
@@ -455,3 +479,4 @@ void MainScene::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventDa
 {
 	GetSubsystem<Renderer>()->DrawDebugGeometry(true);
 }
+
