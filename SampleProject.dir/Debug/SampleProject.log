@@ -5,8 +5,8 @@ F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\inc
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): note: command-line arguments:  see previous definition of 'URHO3D_D3D11'
 F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): warning C4005: 'URHO3D_SSE': macro redefinition
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): note: command-line arguments:  see previous definition of 'URHO3D_SSE'
-MainScene.cpp(194): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MainScene.cpp(215): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MainScene.cpp(215): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-MainScene.cpp(431): warning C4305: '+=': truncation from 'double' to 'float'
+MainScene.cpp(246): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MainScene.cpp(267): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MainScene.cpp(267): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(365): warning C4305: '+=': truncation from 'double' to 'float'
   SampleProject.vcxproj -> F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\bin\SampleProject_d.exe

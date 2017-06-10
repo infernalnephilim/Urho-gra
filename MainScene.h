@@ -22,6 +22,7 @@ public:
 	float time_;
 	float characterPositionX;
 	float characterPositionZ;
+	bool gamePaused_;
 
 	MainScene(Context* context);
 	~MainScene();
@@ -29,12 +30,15 @@ public:
 	virtual void Start();
 
 private:
+	void PlayGame(StringHash eventType, VariantMap& eventData);
+	void QuitGame(StringHash eventType, VariantMap& eventData);
 	// Utworzenie sceny
 	void CreateScene();
 	// Utworzenie bohatera
 	void CreateCharacter();
-
-	void UpdateText();
+	void CreateUI();
+	void CreateText();
+	void UpdateScore();
 
 	void SubscribeToEvents();
 
@@ -43,6 +47,7 @@ private:
 	/// Handle application post-update. Update camera position after character has moved.
 	void HandlePostUpdate(StringHash eventType, VariantMap& eventData);
 	void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
+	void GameOver();
 
 
 	/// Touch utility object.

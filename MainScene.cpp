@@ -24,6 +24,7 @@
 #include <Urho3D/Graphics/Skybox.h>
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/UI/Text.h>
+#include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/UI/UIEvents.h>
@@ -37,7 +38,7 @@
 URHO3D_DEFINE_APPLICATION_MAIN(MainScene)
 
 MainScene::MainScene(Context* context) :
-	App(context), time_(0)
+	App(context), time_(0), gamePaused_(true)
 {
 	// Register factory and attributes for the Character component so it can be created via CreateComponent, and loaded / saved
 	Character::RegisterObject(context);
@@ -54,7 +55,22 @@ void MainScene::Start()
 	if (touchEnabled_)
 		touch_ = new Touch(context_, TOUCH_SENSITIVITY);
 
+	CreateUI();
 	CreateScene();
+	scene_->SetUpdateEnabled(false);
+
+}
+
+
+void MainScene::PlayGame(StringHash eventType, VariantMap& eventData) {
+
+	scene_->SetUpdateEnabled(true);
+	gamePaused_ = false;
+
+
+	UI* ui = GetSubsystem<UI>();
+	ui->GetRoot()->RemoveAllChildren();
+
 
 	CreateCharacter();
 
@@ -62,10 +78,46 @@ void MainScene::Start()
 
 	App::InitMouseMode(MM_RELATIVE);
 
-	UpdateText();
-
+	CreateText();
 }
-void MainScene::UpdateText()
+
+void MainScene::QuitGame(StringHash eventType, VariantMap& eventData) {
+	engine_->Exit();
+}
+
+void MainScene::CreateUI()
+{
+	ResourceCache* cache = GetSubsystem<ResourceCache>();
+	UI* ui = GetSubsystem<UI>();
+
+	// Set up global UI style into the root UI element
+	XMLFile* style = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
+	ui->GetRoot()->SetDefaultStyle(style);
+
+	// Create a Cursor UI element because we want to be able to hide and show it at will. When hidden, the mouse cursor will
+	// control the camera, and when visible, it will interact with the UI
+	SharedPtr<Cursor> cursor(new Cursor(context_));
+	cursor->SetStyleAuto();
+	ui->SetCursor(cursor);
+	// Set starting position of the cursor at the rendering window center
+	Graphics* graphics = GetSubsystem<Graphics>();
+	cursor->SetPosition(graphics->GetWidth() / 2, graphics->GetHeight() / 2);
+
+	// Load UI content prepared in the editor and add to the UI hierarchy
+	SharedPtr<UIElement> layoutRoot = ui->LoadLayout(cache->GetResource<XMLFile>("bin/Data/UI/menuGry.xml"));
+	ui->GetRoot()->AddChild(layoutRoot);
+	// Subscribe to button actions (toggle scene lights when pressed then released)
+	
+	Button* button = layoutRoot->GetChildStaticCast<Button>("PlayGame", true);
+	if (button)
+		SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(MainScene, PlayGame));
+	button = layoutRoot->GetChildStaticCast<Button>("Quit", true);
+	if (button)
+		SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(MainScene, QuitGame));
+}
+
+
+void MainScene::CreateText()
 {
 	// CZAS
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
@@ -292,6 +344,31 @@ void MainScene::SubscribeToEvents()
 
 	UnsubscribeFromEvent(E_SCENEUPDATE);
 }
+void MainScene::GameOver(){
+	////////////// GAME OVER /////////////////////
+	scene_->SetUpdateEnabled(false);
+	//std::cout << character_->gameOver_ << std::endl;
+
+	ResourceCache* cache = GetSubsystem<ResourceCache>();
+	GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
+	gameOverText_ = new Text(context_);
+	gameOverText_->SetText("Game Over");
+	gameOverText_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 80);
+	gameOverText_->SetColor(Color(1, 1, 1));
+	gameOverText_->SetHorizontalAlignment(HA_CENTER);
+	gameOverText_->SetVerticalAlignment(VA_CENTER);
+	GetSubsystem<UI>()->GetRoot()->AddChild(gameOverText_);
+}
+
+void MainScene::UpdateScore() {
+	// update wyswietlanego score
+	time_ += 0.01;
+	std::string str;
+	str.append("Score: ");
+	str.append(std::to_string(int(time_ * 10)));
+	String s(str.c_str(), str.size());
+	text_->SetText(s);
+}
 
 void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
@@ -303,8 +380,28 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
 	if (character_)
 	{
+
 		ResourceCache* cache = GetSubsystem<ResourceCache>();
 		Node* characterNode = character_->GetNode();
+
+		if (character_->gameOver_ == true) {
+			GameOver();
+		}
+		else {
+			UpdateScore();
+
+			// update wyswietlanej pozycji bohatera
+			std::string str2;
+			str2.append("posX: ");
+			str2.append(std::to_string(int(characterNode->GetPosition().x_)));
+			str2.append(" posY: ");
+			str2.append(std::to_string(int(characterNode->GetPosition().y_)));
+			str2.append(" posZ: ");
+			str2.append(std::to_string(int(characterNode->GetPosition().z_)));
+			String s2(str2.c_str(), str2.size());
+			text2_->SetText(s2);
+		}
+
 		if (characterNode->GetPosition().z_ > 10)
 		{
 
@@ -411,43 +508,7 @@ void MainScene::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 
 	Node* characterNode = character_->GetNode();
 
-	////////////// GAME OVER /////////////////////
-	if (character_->gameOver_ == true) {
-		scene_->SetUpdateEnabled(false);
-		//std::cout << character_->gameOver_ << std::endl;
-
-		ResourceCache* cache = GetSubsystem<ResourceCache>();
-		GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
-		gameOverText_ = new Text(context_);	
-		gameOverText_->SetText("Game Over");	
-		gameOverText_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 80);
-		gameOverText_->SetColor(Color(1, 1, 1));
-		gameOverText_->SetHorizontalAlignment(HA_CENTER);
-		gameOverText_->SetVerticalAlignment(VA_CENTER);
-		GetSubsystem<UI>()->GetRoot()->AddChild(gameOverText_);
-	}
-	else {
-		// update wyswietlanego score
-		time_ += 0.01;
-		std::string str;
-		str.append("Score: ");
-		str.append(std::to_string(int(time_ * 10)));
-		String s(str.c_str(), str.size());
-		text_->SetText(s);
-
-		// update wyswietlanej pozycji bohatera
-		std::string str2;
-		str2.append("posX: ");
-		str2.append(std::to_string(int(characterNode->GetPosition().x_)));
-		str2.append(" posY: ");
-		str2.append(std::to_string(int(characterNode->GetPosition().y_)));
-		str2.append(" posZ: ");
-		str2.append(std::to_string(int(characterNode->GetPosition().z_)));
-		String s2(str2.c_str(), str2.size());
-		text2_->SetText(s2);
-	}
 	
-
 	
 
 
