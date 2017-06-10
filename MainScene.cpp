@@ -420,7 +420,7 @@ void MainScene::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 		GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
 		gameOverText_ = new Text(context_);	
 		gameOverText_->SetText("Game Over");	
-		gameOverText_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 50);
+		gameOverText_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 80);
 		gameOverText_->SetColor(Color(1, 1, 1));
 		gameOverText_->SetHorizontalAlignment(HA_CENTER);
 		gameOverText_->SetVerticalAlignment(VA_CENTER);
