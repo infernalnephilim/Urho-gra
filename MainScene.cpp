@@ -16,11 +16,14 @@
 #include <Urho3D/Input/Controls.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/IO/FileSystem.h>
+#include <Urho3D/IO/MemoryBuffer.h>
 #include <Urho3D/Physics/CollisionShape.h>
 #include <Urho3D/Physics/PhysicsWorld.h>
+#include <Urho3D/Physics/PhysicsEvents.h>
 #include <Urho3D/Physics/RigidBody.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Scene.h>
+#include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/Graphics/Skybox.h>
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/UI/Text.h>
@@ -65,12 +68,13 @@ void MainScene::Start()
 void MainScene::PlayGame(StringHash eventType, VariantMap& eventData) {
 
 	scene_->SetUpdateEnabled(true);
+
 	gamePaused_ = false;
 
 
 	UI* ui = GetSubsystem<UI>();
 	ui->GetRoot()->RemoveAllChildren();
-
+	ui->SetCursor(0);
 
 	CreateCharacter();
 
@@ -135,6 +139,18 @@ void MainScene::CreateText()
 	text_->SetVerticalAlignment(VA_TOP);
 	GetSubsystem<UI>()->GetRoot()->AddChild(text_);
 
+	textCollectible_ = new Text(context_);
+	// Text will be updated later in the E_UPDATE handler. Keep readin'.
+	textCollectible_->SetText("Items ");
+	// If the engine cannot find the font, it comes with Urho3D.
+	// Set the environment variables URHO3D_HOME, URHO3D_PREFIX_PATH or
+	// change the engine parameter "ResourcePrefixPath" in the Setup method.
+	textCollectible_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 20);
+	textCollectible_->SetColor(Color(0, 0, 0));
+	textCollectible_->SetHorizontalAlignment(HA_RIGHT);
+	textCollectible_->SetVerticalAlignment(VA_TOP);
+	GetSubsystem<UI>()->GetRoot()->AddChild(textCollectible_);
+
 	// POZYCJA BOHATERA
 
 	text2_ = new Text(context_);
@@ -191,7 +207,7 @@ void MainScene::CreateScene()
 	skyNode->SetScale(100.0f); // The scale actually does not matter
 	Skybox* skybox = skyNode->CreateComponent<Skybox>();
 	skybox->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-	skybox->SetMaterial(cache->GetResource<Material>("Materials/Skybox.xml"));
+	skybox->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/SkyboxMeadow.xml"));
 
 	// Create the floor object
 	const unsigned NUM_FLOOR = 30;
@@ -299,19 +315,10 @@ void MainScene::CreateScene()
 		carrot->SetCastShadows(true);
 
 		RigidBody* carrotBody = carrotNode->CreateComponent<RigidBody>();
-		carrotBody->SetCollisionLayer(2);
+		carrotBody->SetCollisionLayer(4);
 		CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
 		carrotShape->SetBox(Vector3::ONE);
 	}	
-
-	Node* objectNode2 = scene_->CreateChild("Bab");
-	objectNode2->SetPosition(Vector3(0.0f, 1.75f, 30.0f));
-	//objectNode2->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
-	objectNode2->SetScale(1.0f);
-	StaticModel* object52 = objectNode2->CreateComponent<AnimatedModel>();
-	object52->SetModel(cache->GetResource<Model>("Models/babuszka/Babuszka.mdl"));
-	//object52->SetMaterial(cache->GetResource<Material>("Materials/Water.xml"));
-	object52->SetCastShadows(true);
 }
 
 void MainScene::CreateCharacter() {
@@ -365,7 +372,7 @@ void MainScene::SubscribeToEvents()
 	SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(MainScene, HandlePostUpdate));
 	SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(MainScene, HandlePostRenderUpdate));
 	// Unsubscribe the SceneUpdate event from base class as the camera node is being controlled in HandlePostUpdate() in this sample
-	
+
 	//SubscribeToEvent(GetNode(), E_NODECOLLISIONSTART, HANDLER(MyLogicObject, HandleNodeCollisionStart));
 
 	UnsubscribeFromEvent(E_SCENEUPDATE);
@@ -384,6 +391,8 @@ void MainScene::GameOver(){
 	gameOverText_->SetHorizontalAlignment(HA_CENTER);
 	gameOverText_->SetVerticalAlignment(VA_CENTER);
 	GetSubsystem<UI>()->GetRoot()->AddChild(gameOverText_);
+	
+	//CreateUI();
 }
 
 void MainScene::UpdateScore() {
@@ -391,9 +400,36 @@ void MainScene::UpdateScore() {
 	time_ += 0.01;
 	std::string str;
 	str.append("Score: ");
-	str.append(std::to_string(int(time_ * 10)));
+	str.append(std::to_string(int(time_ * 10) + collected_ * 1000));
 	String s(str.c_str(), str.size());
 	text_->SetText(s);
+}
+
+void MainScene::UpdateCollected() {
+	// update wyswietlanego score
+	collected_ = character_->collected_;
+	std::string str;
+	str.append("Items: ");
+	str.append(std::to_string(collected_));
+	String s(str.c_str(), str.size());
+	textCollectible_->SetText(s);
+}
+void MainScene::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
+{
+	using namespace NodeCollision;
+
+	RigidBody* otherBody = (RigidBody*)eventData[P_OTHERBODY].GetPtr();
+	Node* otherNode = (Node*)eventData[P_OTHERNODE].GetPtr();
+
+	// If the other collision shape belongs to static geometry, perform world collision
+
+	if (otherBody->GetCollisionLayer() == 3) {
+		std::cout << "Kolizja z box" << std::endl;
+		//gameOver_ = true;
+	}
+	else if (otherBody->GetCollisionLayer() == 4) {
+		std::cout << "Kolizja z marchewka" << std::endl;
+	}
 }
 
 void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -415,6 +451,7 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 		}
 		else {
 			UpdateScore();
+			UpdateCollected();
 
 			// update wyswietlanej pozycji bohatera
 			std::string str2;
@@ -428,7 +465,7 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			text2_->SetText(s2);
 		}
 
-		if (characterNode->GetPosition().z_ > 10)
+		if (characterNode->GetPosition().z_ > 10 && characterNode->GetPosition().z_ < 11)
 		{
 
 			Node* objectNode2 = scene_->CreateChild("Boxx");
@@ -441,10 +478,12 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			object52->SetCastShadows(true);
 
 		}
-	}
+		
+		if (characterNode->GetPosition().z_ > 20) {
+			scene_->RemoveChild(scene_->GetChild("Boxx", true));
+		}
 
-	if (character_)
-	{
+
 		// Clear previous controls
 		character_->controls_.Set(CTRL_FORWARD | CTRL_BACK | CTRL_LEFT | CTRL_RIGHT | CTRL_JUMP, false);
 
@@ -535,11 +574,6 @@ void MainScene::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 	Node* characterNode = character_->GetNode();
 
 	
-	
-
-
-
-
 	// Get camera lookat dir from character yaw + pitch
 	Quaternion rot = characterNode->GetRotation();
 	Quaternion dir = rot * Quaternion(character_->controls_.pitch_+15.0f, Vector3::RIGHT);

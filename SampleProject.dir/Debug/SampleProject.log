@@ -1,20 +1,12 @@
-﻿  Character.cpp
+﻿  MainScene.cpp
 F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): warning C4005: 'URHO3D_STATIC_DEFINE': macro redefinition
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): note: command-line arguments:  see previous definition of 'URHO3D_STATIC_DEFINE'
 F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): warning C4005: 'URHO3D_D3D11': macro redefinition
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): note: command-line arguments:  see previous definition of 'URHO3D_D3D11'
 F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): warning C4005: 'URHO3D_SSE': macro redefinition
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): note: command-line arguments:  see previous definition of 'URHO3D_SSE'
-  MainScene.cpp
-F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): warning C4005: 'URHO3D_STATIC_DEFINE': macro redefinition
-  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): note: command-line arguments:  see previous definition of 'URHO3D_STATIC_DEFINE'
-F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): warning C4005: 'URHO3D_D3D11': macro redefinition
-  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): note: command-line arguments:  see previous definition of 'URHO3D_D3D11'
-F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): warning C4005: 'URHO3D_SSE': macro redefinition
-  F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): note: command-line arguments:  see previous definition of 'URHO3D_SSE'
-MainScene.cpp(272): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MainScene.cpp(293): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MainScene.cpp(293): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-MainScene.cpp(391): warning C4305: '+=': truncation from 'double' to 'float'
-  Generating Code...
+MainScene.cpp(288): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MainScene.cpp(309): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MainScene.cpp(309): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(400): warning C4305: '+=': truncation from 'double' to 'float'
   SampleProject.vcxproj -> F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\bin\SampleProject_d.exe

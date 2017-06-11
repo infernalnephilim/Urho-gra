@@ -1,0 +1,9 @@
+<cubemap>
+    <face name="bin/Data/Textures/Meadow/posx.jpg" />
+    <face name="bin/Data/Textures/Meadow/negx.jpg" />
+    <face name="bin/Data/Textures/Meadow/posy.jpg" />
+    <face name="bin/Data/Textures/Meadow/negy.jpg" />
+    <face name="bin/Data/Textures/Meadow/posz.jpg" />
+    <face name="bin/Data/Textures/Meadow/negz.jpg" />
+    <quality low="0" />
+</cubemap>

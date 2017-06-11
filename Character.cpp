@@ -25,6 +25,7 @@ Character::Character(Context* context) :
 	onMiddleLane_(true),
 	onRightLane_(false),
 	gameOver_(false),
+	collected_(0),
 	inAirTimer_(0.0f)
 {
 	// Only the physics update event is needed: unsubscribe from the rest for optimization
@@ -254,8 +255,13 @@ void Character::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
 	// If the other collision shape belongs to static geometry, perform world collision
 
 	if (otherBody->GetCollisionLayer() == 3) {
-		std::cout << "Kolizja z box" << std::endl;
+		//std::cout << "Kolizja z box" << std::endl;
 		gameOver_ = true;
+	}
+	else if (otherBody->GetCollisionLayer() == 4) {
+		//std::cout << "Kolizja z marchewka" << std::endl;
+		otherBody->GetNode()->Remove();
+		collected_ += 1;
 	}
 
 

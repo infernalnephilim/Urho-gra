@@ -17,9 +17,11 @@ class MainScene : public App
 
 public:
 	SharedPtr<Text> text_;
+	SharedPtr<Text> textCollectible_;
 	SharedPtr<Text> text2_;
 	SharedPtr<Text> gameOverText_;
 	float time_;
+	int collected_;
 	float characterPositionX;
 	float characterPositionZ;
 	bool gamePaused_;
@@ -39,10 +41,12 @@ private:
 	void CreateUI();
 	void CreateText();
 	void UpdateScore();
+	void UpdateCollected();
 
 	void SubscribeToEvents();
 
 	/// Handle application update. Set controls to character.
+	void HandleNodeCollision(StringHash eventType, VariantMap& eventData);
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
 	/// Handle application post-update. Update camera position after character has moved.
 	void HandlePostUpdate(StringHash eventType, VariantMap& eventData);
