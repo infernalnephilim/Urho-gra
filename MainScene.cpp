@@ -188,7 +188,7 @@ void MainScene::CreateScene()
 
 	// SKY
 	Node* skyNode = scene_->CreateChild("Sky");
-	skyNode->SetScale(500.0f); // The scale actually does not matter
+	skyNode->SetScale(100.0f); // The scale actually does not matter
 	Skybox* skybox = skyNode->CreateComponent<Skybox>();
 	skybox->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 	skybox->SetMaterial(cache->GetResource<Material>("Materials/Skybox.xml"));
@@ -199,10 +199,10 @@ void MainScene::CreateScene()
 	{
 		Node* floorNode = scene_->CreateChild("Floor");
 		floorNode->SetPosition(Vector3(0.0f, -0.5f, 5.0f + 10.0f * i));
-		floorNode->SetScale(Vector3(10.0f, 1.0f, 10.0f));
+		floorNode->SetScale(Vector3(9.0f, 1.0f, 10.0f));
 		StaticModel* object = floorNode->CreateComponent<StaticModel>();
 		object->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-		object->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/pathM.xml"));
+		object->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/pathM2.xml"));
 
 		RigidBody* body = floorNode->CreateComponent<RigidBody>();
 		// Use collision layer bit 2 to mark world scenery. This is what we will raycast against to prevent camera from going
@@ -210,6 +210,32 @@ void MainScene::CreateScene()
 		body->SetCollisionLayer(2);
 		CollisionShape* shape = floorNode->CreateComponent<CollisionShape>();
 		shape->SetBox(Vector3::ONE);
+
+		Node* landscapeNode = scene_->CreateChild("LandscapeRight1");
+		landscapeNode->SetPosition(Vector3(10.0f/2 + 4.5f, -0.5f, 5.0f + 10.0f * i));
+		landscapeNode->SetScale(Vector3(10.0f, 1.0f, 10.0f));
+		StaticModel* landscapeObject = landscapeNode->CreateComponent<StaticModel>();
+		landscapeObject->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+		landscapeObject->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
+		Node* landscapeNode2 = scene_->CreateChild("LandscapeRight2");
+		landscapeNode2->SetPosition(Vector3(10.0f / 2 + 10.0f + 4.5f, -0.5f, 5.0f + 10.0f * i));
+		landscapeNode2->SetScale(Vector3(10.0f, 1.0f, 10.0f));
+		StaticModel* landscapeObject2 = landscapeNode2->CreateComponent<StaticModel>();
+		landscapeObject2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+		landscapeObject2->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
+
+		Node* landscapeNodeLeft = scene_->CreateChild("LandscapeLeft1");
+		landscapeNodeLeft->SetPosition(Vector3(-(10.0f / 2 + 4.5f), -0.5f, 5.0f + 10.0f * i));
+		landscapeNodeLeft->SetScale(Vector3(10.0f, 1.0f, 10.0f));
+		StaticModel* landscapeObjectLeft = landscapeNodeLeft->CreateComponent<StaticModel>();
+		landscapeObjectLeft->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+		landscapeObjectLeft->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
+		Node* landscapeNodeLeft2 = scene_->CreateChild("LandscapeLeft2");
+		landscapeNodeLeft2->SetPosition(Vector3(-(10.0f / 2 + 10.0f + 4.5f), -0.5f, 5.0f + 10.0f * i));
+		landscapeNodeLeft2->SetScale(Vector3(10.0f, 1.0f, 10.0f));
+		StaticModel* landscapeObjectLeft2 = landscapeNodeLeft2->CreateComponent<StaticModel>();
+		landscapeObjectLeft2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+		landscapeObjectLeft2->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
 	}
 
 
