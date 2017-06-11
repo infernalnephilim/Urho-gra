@@ -25,6 +25,7 @@ public:
 	float characterPositionX;
 	float characterPositionZ;
 	bool gamePaused_;
+	bool gameOver_;
 
 	MainScene(Context* context);
 	~MainScene();
@@ -46,7 +47,6 @@ private:
 	void SubscribeToEvents();
 
 	/// Handle application update. Set controls to character.
-	void HandleNodeCollision(StringHash eventType, VariantMap& eventData);
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
 	/// Handle application post-update. Update camera position after character has moved.
 	void HandlePostUpdate(StringHash eventType, VariantMap& eventData);

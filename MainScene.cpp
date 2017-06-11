@@ -24,6 +24,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Scene/SceneEvents.h>
+#include <Urho3D/Scene/Component.h>
 #include <Urho3D/Graphics/Skybox.h>
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/UI/Text.h>
@@ -41,7 +42,7 @@
 URHO3D_DEFINE_APPLICATION_MAIN(MainScene)
 
 MainScene::MainScene(Context* context) :
-	App(context), time_(0), gamePaused_(true)
+	App(context), time_(0), gamePaused_(true), gameOver_(false)
 {
 	// Register factory and attributes for the Character component so it can be created via CreateComponent, and loaded / saved
 	Character::RegisterObject(context);
@@ -59,13 +60,22 @@ void MainScene::Start()
 		touch_ = new Touch(context_, TOUCH_SENSITIVITY);
 
 	CreateUI();
-	CreateScene();
-	scene_->SetUpdateEnabled(false);
+	
 
 }
 
 
 void MainScene::PlayGame(StringHash eventType, VariantMap& eventData) {
+	if (gameOver_ == true) {
+		scene_->SetUpdateEnabled(false);
+		scene_->Clear(true, true);
+		scene_->Remove();
+		
+		time_ = 0.0;
+		
+		gameOver_ = false;
+	}
+	CreateScene();
 
 	scene_->SetUpdateEnabled(true);
 
@@ -74,7 +84,7 @@ void MainScene::PlayGame(StringHash eventType, VariantMap& eventData) {
 
 	UI* ui = GetSubsystem<UI>();
 	ui->GetRoot()->RemoveAllChildren();
-	ui->SetCursor(0);
+	//ui->SetCursor(0);
 
 	CreateCharacter();
 
@@ -83,6 +93,8 @@ void MainScene::PlayGame(StringHash eventType, VariantMap& eventData) {
 	App::InitMouseMode(MM_RELATIVE);
 
 	CreateText();
+
+
 }
 
 void MainScene::QuitGame(StringHash eventType, VariantMap& eventData) {
@@ -379,11 +391,14 @@ void MainScene::SubscribeToEvents()
 }
 void MainScene::GameOver(){
 	////////////// GAME OVER /////////////////////
-	scene_->SetUpdateEnabled(false);
+	//scene_->SetUpdateEnabled(false);
+	gameOver_ = true;
+	
 	//std::cout << character_->gameOver_ << std::endl;
+	UI* ui = GetSubsystem<UI>();
 
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
-	GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
+	ui->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
 	gameOverText_ = new Text(context_);
 	gameOverText_->SetText("Game Over");
 	gameOverText_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 80);
@@ -391,8 +406,18 @@ void MainScene::GameOver(){
 	gameOverText_->SetHorizontalAlignment(HA_CENTER);
 	gameOverText_->SetVerticalAlignment(VA_CENTER);
 	GetSubsystem<UI>()->GetRoot()->AddChild(gameOverText_);
-	
-	//CreateUI();
+
+	// Load UI content prepared in the editor and add to the UI hierarchy
+	SharedPtr<UIElement> layoutRoot = ui->LoadLayout(cache->GetResource<XMLFile>("bin/Data/UI/menuGry.xml"));
+	ui->GetRoot()->AddChild(layoutRoot);
+	// Subscribe to button actions (toggle scene lights when pressed then released)
+
+	Button* button = layoutRoot->GetChildStaticCast<Button>("PlayGame", true);
+	if (button)
+		SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(MainScene, PlayGame));
+	button = layoutRoot->GetChildStaticCast<Button>("Quit", true);
+	if (button)
+		SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(MainScene, QuitGame));
 }
 
 void MainScene::UpdateScore() {
@@ -413,23 +438,6 @@ void MainScene::UpdateCollected() {
 	str.append(std::to_string(collected_));
 	String s(str.c_str(), str.size());
 	textCollectible_->SetText(s);
-}
-void MainScene::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
-{
-	using namespace NodeCollision;
-
-	RigidBody* otherBody = (RigidBody*)eventData[P_OTHERBODY].GetPtr();
-	Node* otherNode = (Node*)eventData[P_OTHERNODE].GetPtr();
-
-	// If the other collision shape belongs to static geometry, perform world collision
-
-	if (otherBody->GetCollisionLayer() == 3) {
-		std::cout << "Kolizja z box" << std::endl;
-		//gameOver_ = true;
-	}
-	else if (otherBody->GetCollisionLayer() == 4) {
-		std::cout << "Kolizja z marchewka" << std::endl;
-	}
 }
 
 void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
