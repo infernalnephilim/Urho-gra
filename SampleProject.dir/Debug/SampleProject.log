@@ -8,5 +8,5 @@ F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\inc
 MainScene.cpp(300): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 MainScene.cpp(321): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 MainScene.cpp(321): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-MainScene.cpp(425): warning C4305: '+=': truncation from 'double' to 'float'
+MainScene.cpp(430): warning C4305: '+=': truncation from 'double' to 'float'
   SampleProject.vcxproj -> F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\bin\SampleProject_d.exe

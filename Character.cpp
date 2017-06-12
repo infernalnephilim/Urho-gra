@@ -218,7 +218,7 @@ void Character::FixedUpdate(float timeStep)
 			{
 				body->ApplyImpulse(Vector3::UP * JUMP_FORCE);
 				okToJump_ = false;
-				//animCtrl->PlayExclusive("bin/Data/Models/Kachujin/jump.bvh", 0, false, 0.2f);
+				animCtrl->PlayExclusive("bin/Data/Models/Mutant/Mutant_Jump.ani", 0, false, 0.2f);
 			}
 		}
 		else
@@ -229,14 +229,17 @@ void Character::FixedUpdate(float timeStep)
 
 	if (!onGround_)
 	{
-		//animCtrl->PlayExclusive("bin/Data/Models/Kachujin/jump.bvh", 0, false, 0.2f);
+		animCtrl->PlayExclusive("bin/Data/Models/Mutant/Mutant_Jump.ani", 0, false, 0.2f);
 	}
 	else
 	{
-		if (softGrounded && !moveDir.Equals(Vector3::ZERO))
+		if (softGrounded && !moveDir.Equals(Vector3::ZERO)) {
 			animCtrl->PlayExclusive("Models/Kachujin/Kachujin_Walk.ani", 0, true, 0.2f);
+		}
 		else
+		{
 			animCtrl->Stop("Models/Kachujin/Kachujin_Walk.ani", 0.2f);
+		}
 		// Set walk animation speed proportional to velocity
 		animCtrl->SetSpeed("Models/Kachujin/Kachujin_Walk.ani", planeVelocity.Length() * 0.3f);
 	}

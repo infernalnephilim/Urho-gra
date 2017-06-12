@@ -322,8 +322,8 @@ void MainScene::CreateScene()
 		carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
 		carrotNode->SetScale(0.2f);
 		StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
-		carrot->SetModel(cache->GetResource<Model>("Models/marchew/Models/marchewka.mdl"));
-		carrot->SetMaterial(cache->GetResource<Material>("Models/marchew/Materials/orangeM.xml"));
+		carrot->SetModel(cache->GetResource<Model>("bin/Data/Models/marchewka/Models/marchewka.mdl"));
+		carrot->SetMaterial(cache->GetResource<Material>("bin/Data/Models/marchewka/Materials/orange.xml"));
 		carrot->SetCastShadows(true);
 
 		RigidBody* carrotBody = carrotNode->CreateComponent<RigidBody>();
@@ -331,6 +331,7 @@ void MainScene::CreateScene()
 		CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
 		carrotShape->SetBox(Vector3::ONE);
 	}	
+
 }
 
 void MainScene::CreateCharacter() {
@@ -338,13 +339,13 @@ void MainScene::CreateCharacter() {
 
 	Node* objectNode = scene_->CreateChild("Jack");
 	objectNode->SetPosition(Vector3(0.0f, 1.1f, 0.0f));
-	//objectNode->SetScale(Vector3(0.1f, 0.1f, 0.1f));
-	objectNode->SetRotation(Quaternion(90.0f, 0.0f, 0.0f));
+	objectNode->SetScale(Vector3(0.7f, 0.7f, 0.7f));
+	//objectNode->SetRotation(Quaternion(90.0f, 0.0f, 0.0f));
 
 	// Create the rendering component + animation controller
 	AnimatedModel* object = objectNode->CreateComponent<AnimatedModel>();
-	object->SetModel(cache->GetResource<Model>("Models/Kachujin/Kachujin.mdl"));
-	object->SetMaterial(cache->GetResource<Material>("Models/Kachujin/Materials/Kachujin.xml"));
+	object->SetModel(cache->GetResource<Model>("bin/Data/Models/baba/Models/Fitness_Grandma_BodyGeo.mdl"));
+	object->SetMaterial(cache->GetResource<Material>("bin/Data/Models/baba/Materials/Grandma_MAT.xml"));
 	object->SetCastShadows(true);
 	objectNode->CreateComponent<AnimationController>();
 
@@ -372,6 +373,10 @@ void MainScene::CreateCharacter() {
 	// and keeps it alive as long as it's not removed from the hierarchy
 	character_ = objectNode->CreateComponent<Character>();
 	//////////////////
+
+	File saveFile(context_, GetSubsystem<FileSystem>()->GetProgramDir() + "bin/Data/Scenes/GameScene.xml", FILE_WRITE);
+	scene_->SaveXML(saveFile);
+	std::cout << "SAAAAAAAAAAAAAAAVE" << std::endl;
 }
 
 
@@ -391,7 +396,7 @@ void MainScene::SubscribeToEvents()
 }
 void MainScene::GameOver(){
 	////////////// GAME OVER /////////////////////
-	//scene_->SetUpdateEnabled(false);
+	scene_->SetUpdateEnabled(false);
 	gameOver_ = true;
 	
 	//std::cout << character_->gameOver_ << std::endl;
@@ -516,29 +521,7 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			}
 			character_->controls_.Set(CTRL_JUMP, input->GetKeyDown(KEY_SPACE));
 
-			// Add character yaw & pitch from the mouse motion or touch input
-			if (touchEnabled_)
-			{
-				for (unsigned i = 0; i < input->GetNumTouches(); ++i)
-				{
-					TouchState* state = input->GetTouch(i);
-					if (!state->touchedElement_)    // Touch on empty space
-					{
-						Camera* camera = cameraNode_->GetComponent<Camera>();
-						if (!camera)
-							return;
-
-						Graphics* graphics = GetSubsystem<Graphics>();
-						//character_->controls_.yaw_ += TOUCH_SENSITIVITY * camera->GetFov() / graphics->GetHeight() * state->delta_.x_;
-						//character_->controls_.pitch_ += TOUCH_SENSITIVITY * camera->GetFov() / graphics->GetHeight() * state->delta_.y_;
-					}
-				}
-			}
-			else
-			{
-				//character_->controls_.yaw_ += (float)input->GetMouseMoveX() * YAW_SENSITIVITY;
-				//character_->controls_.pitch_ += (float)input->GetMouseMoveY() * YAW_SENSITIVITY;
-			}
+			
 
 			character_->controls_.Set(CTRL_FORWARD);
 

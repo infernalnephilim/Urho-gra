@@ -1,0 +1,9 @@
+Materials/Skin.xml
+Materials/Clothes.xml
+Materials/Shoes.xml
+Materials/Scarf.xml
+Materials/Hair.xml
+Materials/Eye.xml
+Materials/EyeBall.xml
+Materials/Lashes.xml
+Materials/Apron.xml
