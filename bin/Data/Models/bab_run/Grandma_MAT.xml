@@ -1,0 +1,8 @@
+<material>
+	<technique name="Techniques/DiffNormalSpec.xml"/>
+	<texture name="bin/Data/Models/bab_run/FitnessGrandma_diffuse.jpg" unit="diffuse"/>
+	<texture name="bin/Data/Models/bab_run/FitnessGrandma_normal.jpg" unit="normal"/>
+	<texture name="bin/Data/Models/bab_run/FitnessGrandma_spec.jpg" unit="specular"/>
+	<parameter name="MatDiffColor" value="0.8 0.8 0.8 1"/>
+	<parameter name="MatSpecColor" value="0.25 0.25 0.25 23"/>
+</material>

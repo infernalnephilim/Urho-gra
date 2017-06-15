@@ -11,10 +11,10 @@ const int CTRL_LEFT = 4;
 const int CTRL_RIGHT = 8;
 const int CTRL_JUMP = 16;
 
-const float MOVE_FORCE = 0.8f;
+const float MOVE_FORCE = 1.6f;
 const float INAIR_MOVE_FORCE = 0.02f;
 const float BRAKE_FORCE = 0.2f;
-const float JUMP_FORCE = 7.0f;
+const float JUMP_FORCE = 105.0f;// 7.0f;
 const float YAW_SENSITIVITY = 0.1f;
 const float INAIR_THRESHOLD_TIME = 0.1f;
 

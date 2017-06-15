@@ -22,6 +22,8 @@ public:
 	SharedPtr<Text> gameOverText_;
 	float time_;
 	int collected_;
+	int level_;
+	int currentLevel_;
 	float characterPositionX;
 	float characterPositionZ;
 	bool gamePaused_;
@@ -37,10 +39,17 @@ private:
 	void QuitGame(StringHash eventType, VariantMap& eventData);
 	// Utworzenie sceny
 	void CreateScene();
+	void CreateCollectibles(ResourceCache* cache);
+	void CreateFloor(ResourceCache* cache, int level);
+	void DeleteFloor(int level);
+	void CreateObstacles(ResourceCache* cache);
 	// Utworzenie bohatera
 	void CreateCharacter();
 	void CreateUI();
 	void CreateText();
+
+	void CreateNewObstacles();
+	void Collect();
 	void UpdateScore();
 	void UpdateCollected();
 

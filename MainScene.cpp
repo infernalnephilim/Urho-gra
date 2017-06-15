@@ -42,7 +42,7 @@
 URHO3D_DEFINE_APPLICATION_MAIN(MainScene)
 
 MainScene::MainScene(Context* context) :
-	App(context), time_(0), gamePaused_(true), gameOver_(false)
+	App(context), time_(0), level_(0), currentLevel_(0), gamePaused_(true), gameOver_(false)
 {
 	// Register factory and attributes for the Character component so it can be created via CreateComponent, and loaded / saved
 	Character::RegisterObject(context);
@@ -75,6 +75,8 @@ void MainScene::PlayGame(StringHash eventType, VariantMap& eventData) {
 		
 		gameOver_ = false;
 	}
+	level_ = 0;
+	currentLevel_ = 0;
 	CreateScene();
 
 	scene_->SetUpdateEnabled(true);
@@ -221,12 +223,36 @@ void MainScene::CreateScene()
 	skybox->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 	skybox->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/SkyboxMeadow.xml"));
 
+
+
+	Node* floorNodeX = scene_->CreateChild("Floor");
+	floorNodeX->SetPosition(Vector3(0.0f, -0.5f, 5.0f - 10.0f));
+	floorNodeX->SetScale(Vector3(9.0f, 1.0f, 10.0f));
+	StaticModel* objectX = floorNodeX->CreateComponent<StaticModel>();
+	objectX->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+	objectX->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/pathM2.xml"));
+
+	RigidBody* bodyX = floorNodeX->CreateComponent<RigidBody>();
+	// Use collision layer bit 2 to mark world scenery. This is what we will raycast against to prevent camera from going
+	// inside geometry
+	bodyX->SetCollisionLayer(2);
+	CollisionShape* shapeX = floorNodeX->CreateComponent<CollisionShape>();
+	shapeX->SetBox(Vector3::ONE);
+
+
+	CreateFloor(cache, level_);
+	CreateCollectibles(cache);
+	CreateObstacles(cache);
+}
+
+void MainScene::CreateFloor(ResourceCache* cache, int level) {
+
 	// Create the floor object
-	const unsigned NUM_FLOOR = 30;
-	for (unsigned i = 0; i < NUM_FLOOR; ++i)
+	const unsigned NUM_FLOOR = 10;
+	for (unsigned i = 0; i < NUM_FLOOR; i++)
 	{
-		Node* floorNode = scene_->CreateChild("Floor");
-		floorNode->SetPosition(Vector3(0.0f, -0.5f, 5.0f + 10.0f * i));
+		Node* floorNode = scene_->CreateChild("Floor" + level);
+		floorNode->SetPosition(Vector3(0.0f, -0.5f, 5.0f + 10.0f * i + 100.0f * level));
 		floorNode->SetScale(Vector3(9.0f, 1.0f, 10.0f));
 		StaticModel* object = floorNode->CreateComponent<StaticModel>();
 		object->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
@@ -239,57 +265,79 @@ void MainScene::CreateScene()
 		CollisionShape* shape = floorNode->CreateComponent<CollisionShape>();
 		shape->SetBox(Vector3::ONE);
 
-		Node* landscapeNode = scene_->CreateChild("LandscapeRight1");
-		landscapeNode->SetPosition(Vector3(10.0f/2 + 4.5f, -0.5f, 5.0f + 10.0f * i));
+		Node* landscapeNode = scene_->CreateChild("LandscapeRight"+level);
+		landscapeNode->SetPosition(Vector3(10.0f / 2 + 4.5f, -0.5f, 5.0f + 10.0f * i + 100.0f * level));
 		landscapeNode->SetScale(Vector3(10.0f, 1.0f, 10.0f));
 		StaticModel* landscapeObject = landscapeNode->CreateComponent<StaticModel>();
 		landscapeObject->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 		landscapeObject->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
-		Node* landscapeNode2 = scene_->CreateChild("LandscapeRight2");
-		landscapeNode2->SetPosition(Vector3(10.0f / 2 + 10.0f + 4.5f, -0.5f, 5.0f + 10.0f * i));
+		Node* landscapeNode2 = scene_->CreateChild("LandscapeRight"+ level);
+		landscapeNode2->SetPosition(Vector3(10.0f / 2 + 10.0f + 4.5f, -0.5f, 5.0f + 10.0f * i + 100.0f * level));
 		landscapeNode2->SetScale(Vector3(10.0f, 1.0f, 10.0f));
 		StaticModel* landscapeObject2 = landscapeNode2->CreateComponent<StaticModel>();
 		landscapeObject2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 		landscapeObject2->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
 
-		Node* landscapeNodeLeft = scene_->CreateChild("LandscapeLeft1");
-		landscapeNodeLeft->SetPosition(Vector3(-(10.0f / 2 + 4.5f), -0.5f, 5.0f + 10.0f * i));
+		Node* landscapeNodeLeft = scene_->CreateChild("LandscapeLeft"+level);
+		landscapeNodeLeft->SetPosition(Vector3(-(10.0f / 2 + 4.5f), -0.5f, 5.0f + 10.0f * i + 100.0f * level));
 		landscapeNodeLeft->SetScale(Vector3(10.0f, 1.0f, 10.0f));
 		StaticModel* landscapeObjectLeft = landscapeNodeLeft->CreateComponent<StaticModel>();
 		landscapeObjectLeft->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 		landscapeObjectLeft->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
-		Node* landscapeNodeLeft2 = scene_->CreateChild("LandscapeLeft2");
-		landscapeNodeLeft2->SetPosition(Vector3(-(10.0f / 2 + 10.0f + 4.5f), -0.5f, 5.0f + 10.0f * i));
+		Node* landscapeNodeLeft2 = scene_->CreateChild("LandscapeLeft"+ level);
+		landscapeNodeLeft2->SetPosition(Vector3(-(10.0f / 2 + 10.0f + 4.5f), -0.5f, 5.0f + 10.0f * i + 100.0f * level));
 		landscapeNodeLeft2->SetScale(Vector3(10.0f, 1.0f, 10.0f));
 		StaticModel* landscapeObjectLeft2 = landscapeNodeLeft2->CreateComponent<StaticModel>();
 		landscapeObjectLeft2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 		landscapeObjectLeft2->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
+
+		/////////////////////////////////////
+		Node* leftWallNode = scene_->CreateChild("LeftWall" + level);
+		leftWallNode->SetPosition(Vector3(-4.0f, 2.0f, 5.0f + 10.0f * i + 100.0f * level));
+		leftWallNode->SetScale(Vector3(1.0f, 4.0f, 10.0f));
+		StaticModel* object2 = leftWallNode->CreateComponent<StaticModel>();
+		object2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+		object2->SetMaterial(cache->GetResource<Material>("Materials/GreenTransparent.xml"));
+
+		RigidBody* body2 = leftWallNode->CreateComponent<RigidBody>();
+		body2->SetCollisionLayer(2);
+		CollisionShape* shape2 = leftWallNode->CreateComponent<CollisionShape>();
+		shape2->SetBox(Vector3::ONE);
+
+		Node* rightWallNode = scene_->CreateChild("RightWall" + level);
+		rightWallNode->SetPosition(Vector3(4.0f, 2.0f, 5.0f + 10.0f * i + 100.0f * level));
+		rightWallNode->SetScale(Vector3(1.0f, 4.0f, 10.0f));
+		StaticModel* object3 = rightWallNode->CreateComponent<StaticModel>();
+		object3->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+		object3->SetMaterial(cache->GetResource<Material>("Materials/GreenTransparent.xml"));
+
+		RigidBody* body3 = rightWallNode->CreateComponent<RigidBody>();
+		body3->SetCollisionLayer(2);
+		CollisionShape* shape3 = rightWallNode->CreateComponent<CollisionShape>();
+		shape3->SetBox(Vector3::ONE);
 	}
 
 
-	Node* leftWallNode = scene_->CreateChild("LeftWall");
-	leftWallNode->SetPosition(Vector3(-4.5f, 2.0f, 100.0f));
-	leftWallNode->SetScale(Vector3(1.0f, 4.0f, 200.0f));
-	StaticModel* object2 = leftWallNode->CreateComponent<StaticModel>();
-	object2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-	object2->SetMaterial(cache->GetResource<Material>("Materials/GreenTransparent.xml"));
+}
 
-	RigidBody* body2 = leftWallNode->CreateComponent<RigidBody>();
-	body2->SetCollisionLayer(2);
-	CollisionShape* shape2 = leftWallNode->CreateComponent<CollisionShape>();
-	shape2->SetBox(Vector3::ONE);
 
-	Node* rightWallNode = scene_->CreateChild("RightWall");
-	rightWallNode->SetPosition(Vector3(4.5f, 2.0f, 100.0f));
-	rightWallNode->SetScale(Vector3(1.0f, 4.0f, 200.0f));
-	StaticModel* object3 = rightWallNode->CreateComponent<StaticModel>();
-	object3->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-	object3->SetMaterial(cache->GetResource<Material>("Materials/GreenTransparent.xml"));
+void MainScene::DeleteFloor(int level) {
+	for (int i = 0; i < 10; i++) {
+		Node* removeNode = scene_->GetChild("Floor" + level);
+		scene_->RemoveChild(removeNode);
+		removeNode = scene_->GetChild("LandscapeRight" + level);
+		scene_->RemoveChild(removeNode);
+		removeNode = scene_->GetChild("LandscapeLeft" + level);
+		scene_->RemoveChild(removeNode);
+		removeNode = scene_->GetChild("LeftWall" + level);
+		scene_->RemoveChild(removeNode);
+		removeNode = scene_->GetChild("RightWall" + level);
+		scene_->RemoveChild(removeNode);
+	}
+	
+}
 
-	RigidBody* body3 = rightWallNode->CreateComponent<RigidBody>();
-	body3->SetCollisionLayer(2);
-	CollisionShape* shape3 = rightWallNode->CreateComponent<CollisionShape>();
-	shape3->SetBox(Vector3::ONE);
+void MainScene::CreateObstacles(ResourceCache* cache) {
 
 
 
@@ -297,11 +345,11 @@ void MainScene::CreateScene()
 	for (unsigned i = 0; i < NUM_BOXES; ++i)
 	{
 		Node* objectNode = scene_->CreateChild("Box");
-		objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 3,0.75f, int(Random(90.0f) + 5.0f) * 4));
-		objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
-		objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
+		objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.0f, int(Random(90.0f) + 5.0f) * 3));
+		//objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
+		//objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
 		StaticModel* object5 = objectNode->CreateComponent<StaticModel>();
-		object5->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+		object5->SetModel(cache->GetResource<Model>("bin/Data/Models/skala/Models/Skala_low_poly_B.mdl"));
 		object5->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
 		object5->SetCastShadows(true);
 
@@ -312,12 +360,14 @@ void MainScene::CreateScene()
 		CollisionShape* shape5 = objectNode->CreateComponent<CollisionShape>();
 		shape5->SetBox(Vector3::ONE);
 	}
+}
 
+void MainScene::CreateCollectibles(ResourceCache* cache) {
 	const unsigned NUM_CARROTS = 30;
 	for (unsigned i = 0; i < NUM_CARROTS; ++i)
 	{
 
-		Node* carrotNode = scene_->CreateChild("Carrot");
+		Node* carrotNode = scene_->CreateChild("Carrot" + i);
 		carrotNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.75f, int(Random(90.0f) + 5.0f) * 2));
 		carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
 		carrotNode->SetScale(0.2f);
@@ -333,19 +383,18 @@ void MainScene::CreateScene()
 	}	
 
 }
-
 void MainScene::CreateCharacter() {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 
 	Node* objectNode = scene_->CreateChild("Jack");
 	objectNode->SetPosition(Vector3(0.0f, 1.1f, 0.0f));
-	objectNode->SetScale(Vector3(0.7f, 0.7f, 0.7f));
+	objectNode->SetScale(Vector3(0.6f, 0.6f, 0.6f));
 	//objectNode->SetRotation(Quaternion(90.0f, 0.0f, 0.0f));
 
 	// Create the rendering component + animation controller
 	AnimatedModel* object = objectNode->CreateComponent<AnimatedModel>();
-	object->SetModel(cache->GetResource<Model>("bin/Data/Models/baba/Models/Fitness_Grandma_BodyGeo.mdl"));
-	object->SetMaterial(cache->GetResource<Material>("bin/Data/Models/baba/Materials/Grandma_MAT.xml"));
+	object->SetModel(cache->GetResource<Model>("bin/Data/Models/kach/Kachujin.mdl"));
+	object->SetMaterial(cache->GetResource<Material>("bin/Data/Models/Kachujin/Materials/kachujin.mdl"));
 	object->SetCastShadows(true);
 	objectNode->CreateComponent<AnimationController>();
 
@@ -355,7 +404,7 @@ void MainScene::CreateCharacter() {
 	// Create rigidbody, and set non-zero mass so that the body becomes dynamic
 	RigidBody* body = objectNode->CreateComponent<RigidBody>();
 	body->SetCollisionLayer(1);
-	body->SetMass(1.0f);
+	body->SetMass(15.0f);
 
 	// Set zero angular factor so that physics doesn't turn the character on its own.
 	// Instead we will control the character yaw manually
@@ -367,6 +416,7 @@ void MainScene::CreateCharacter() {
 	// Set a capsule shape for collision
 	CollisionShape* shape = objectNode->CreateComponent<CollisionShape>();
 	shape->SetCapsule(0.7f, 1.8f, Vector3(0.0f, 0.9f, 0.0f));
+	//shape->SetCapsule(5.7f, 10.8f, Vector3(0.0f, 1.9f, 0.0f));
 
 	// Create the character logic component, which takes care of steering the rigidbody
 	// Remember it so that we can set the controls. Use a WeakPtr because the scene hierarchy already owns it
@@ -431,6 +481,10 @@ void MainScene::UpdateScore() {
 	std::string str;
 	str.append("Score: ");
 	str.append(std::to_string(int(time_ * 10) + collected_ * 1000));
+	str.append(" Level: ");
+	str.append(std::to_string(level_));
+	str.append(" Current Level: ");
+	str.append(std::to_string(currentLevel_));
 	String s(str.c_str(), str.size());
 	text_->SetText(s);
 }
@@ -443,6 +497,41 @@ void MainScene::UpdateCollected() {
 	str.append(std::to_string(collected_));
 	String s(str.c_str(), str.size());
 	textCollectible_->SetText(s);
+}
+
+void MainScene::CreateNewObstacles() {
+	if (character_)
+	{
+		ResourceCache* cache = GetSubsystem<ResourceCache>();
+		Node* characterNode = character_->GetNode();
+
+
+
+
+
+		////////////////// Wodne szesciany
+		if (characterNode->GetPosition().z_ > 10 && characterNode->GetPosition().z_ < 11)
+		{
+
+			Node* objectNode2 = scene_->CreateChild("Boxx");
+			objectNode2->SetPosition(Vector3((int(Random(3.0f) - 1.0f))*3.0f - 3.0f, 1.75f, 40.0f));
+			//objectNode2->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
+			objectNode2->SetScale(1.5f);
+			StaticModel* object52 = objectNode2->CreateComponent<StaticModel>();
+			object52->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+			object52->SetMaterial(cache->GetResource<Material>("Materials/Water.xml"));
+			object52->SetCastShadows(true);
+
+		}
+
+		if (characterNode->GetPosition().z_ > 20) {
+			scene_->RemoveChild(scene_->GetChild("Boxx", true));
+		}
+	}
+}
+
+void MainScene::Collect() {
+
 }
 
 void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -463,6 +552,17 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			GameOver();
 		}
 		else {
+			//// Usuwanie sciezki, ktora bohater juz przeszedl
+			if (characterNode->GetPosition().z_ > 100.0f * (currentLevel_+ 1) + 5.0f) {
+				currentLevel_ += 1;
+				DeleteFloor(currentLevel_ - 1);
+			}
+			//// Tworzenie nowej œcie¿ki
+			if (characterNode->GetPosition().z_ >= 50.0f * (level_+1)) {
+				level_ += 1;
+				CreateFloor(cache, level_);
+			}
+
 			UpdateScore();
 			UpdateCollected();
 
@@ -478,23 +578,9 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			text2_->SetText(s2);
 		}
 
-		if (characterNode->GetPosition().z_ > 10 && characterNode->GetPosition().z_ < 11)
-		{
 
-			Node* objectNode2 = scene_->CreateChild("Boxx");
-			objectNode2->SetPosition(Vector3((int(Random(3.0f) - 1.0f))*3.0f - 3.0f, 1.75f, 40.0f));
-			//objectNode2->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
-			objectNode2->SetScale(1.5f);
-			StaticModel* object52 = objectNode2->CreateComponent<StaticModel>();
-			object52->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-			object52->SetMaterial(cache->GetResource<Material>("Materials/Water.xml"));
-			object52->SetCastShadows(true);
+		CreateNewObstacles();
 
-		}
-		
-		if (characterNode->GetPosition().z_ > 20) {
-			scene_->RemoveChild(scene_->GetChild("Boxx", true));
-		}
 
 
 		// Clear previous controls
@@ -514,16 +600,16 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			if (!touch_ || !touch_->useGyroscope_)
 			{
 
-				//	character_->controls_.Set(CTRL_FORWARD, input->GetKeyDown(KEY_W));
-				//character_->controls_.Set(CTRL_BACK, input->GetKeyDown(KEY_S));
+				character_->controls_.Set(CTRL_FORWARD, input->GetKeyDown(KEY_W));
+				character_->controls_.Set(CTRL_BACK, input->GetKeyDown(KEY_S));
 				character_->controls_.Set(CTRL_LEFT, input->GetKeyDown(KEY_A));
 				character_->controls_.Set(CTRL_RIGHT, input->GetKeyDown(KEY_D));
 			}
 			character_->controls_.Set(CTRL_JUMP, input->GetKeyDown(KEY_SPACE));
 
 			
-
-			character_->controls_.Set(CTRL_FORWARD);
+			////////////////// AUTO chodzenie do przodu
+			////////////character_->controls_.Set(CTRL_FORWARD);
 
 			// Limit pitch
 			//character_->controls_.pitch_ = Clamp(character_->controls_.pitch_, -80.0f, 80.0f);

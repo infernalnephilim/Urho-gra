@@ -1,0 +1,7 @@
+<material>
+	<technique name="Techniques/DiffNormal.xml"/>
+	<texture name="Textures/diff__.png" unit="diffuse"/>
+	<texture name="Textures/normal__.png" unit="normal"/>
+	<parameter name="MatDiffColor" value="0.695477 0.695477 0.695477 1"/>
+	<parameter name="MatSpecColor" value="0 0 0 50"/>
+</material>

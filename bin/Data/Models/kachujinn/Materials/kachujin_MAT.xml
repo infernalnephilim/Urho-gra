@@ -1,0 +1,8 @@
+<material>
+	<technique name="Techniques/DiffNormalSpec.xml"/>
+	<texture name="Textures/Kachujin_diffuse.png" unit="diffuse"/>
+	<texture name="Textures/Kachujin_normal.png" unit="normal"/>
+	<texture name="Textures/Kachujin_specular.png" unit="specular"/>
+	<parameter name="MatDiffColor" value="0.8 0.8 0.8 1"/>
+	<parameter name="MatSpecColor" value="0.25 0.25 0.25 103"/>
+</material>

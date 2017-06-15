@@ -4,6 +4,8 @@
 #include <Urho3D/Graphics/AnimationController.h>
 #include <Urho3D/IO/MemoryBuffer.h>
 #include <Urho3D/Math/Color.h>
+#include <Urho3D/Navigation/Navigable.h>
+#include <Urho3D/Navigation/NavigationMesh.h>
 #include <Urho3D/Physics/PhysicsEvents.h>
 #include <Urho3D/Physics/PhysicsWorld.h>
 #include <Urho3D/Resource/ResourceCache.h>
@@ -79,61 +81,46 @@ void Character::FixedUpdate(float timeStep)
 
 	if (controls_.IsDown(CTRL_FORWARD))
 		moveDir += Vector3::FORWARD;
-	/*if (controls_.IsDown(CTRL_BACK))
-	moveDir += Vector3::BACK;*/
-	
+	if (controls_.IsDown(CTRL_BACK))
+	moveDir += Vector3::BACK;
+
 	if (body->GetPosition().x_ >= 1.5f)
 	{
 		onLeftLane_ = false;
 		onMiddleLane_ = false;
 		onRightLane_ = true;
-		
-		if (okToJump_ == true) {
-			body->ApplyImpulse(Vector3(3.0f - body->GetPosition().x_, 0.0f, 0.0f));
-		}
-		
+
 	}
 	else if (body->GetPosition().x_ <= -1.5f)
 	{
 		onLeftLane_ = true;
 		onMiddleLane_ = false;
 		onRightLane_ = false;
-		
-		
-		if (okToJump_ == true) {
-			body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
-		}
-		
 	}
 	else {
 		onLeftLane_ = false;
 		onMiddleLane_ = true;
 		onRightLane_ = false;
-		
-		if (okToJump_ == true) {
-			body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
-		}
-		
 	}
-	
+
 	/*
 	if (onLeftLane_ == true)
 	{
-		if (okToJump_ == true) {
-			body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
-		}
+	if (okToJump_ == true) {
+	body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
 	}
-	else if (onMiddleLane_ == true) 
-	{
-		if (okToJump_ == true) {
-			body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
-		}
 	}
-	else if (onRightLane_ == true) 
+	else if (onMiddleLane_ == true)
 	{
-		if (okToJump_ == true) {
-			body->ApplyImpulse(Vector3(3.0f - body->GetPosition().x_, 0.0f, 0.0f));
-		}
+	if (okToJump_ == true) {
+	body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
+	}
+	}
+	else if (onRightLane_ == true)
+	{
+	if (okToJump_ == true) {
+	body->ApplyImpulse(Vector3(3.0f - body->GetPosition().x_, 0.0f, 0.0f));
+	}
 	}
 	*/
 	/*
@@ -141,70 +128,26 @@ void Character::FixedUpdate(float timeStep)
 	std::cout << "MiddleLane = " << onMiddleLane_ << std::endl;
 	std::cout << "RightLane = " << onRightLane_ << std::endl;
 	*/
-	
+
 	if (controls_.IsDown(CTRL_RIGHT))
 	{
-		if (okToJump_ && onRightLane_ == false)
-		{
-			body->ApplyImpulse(Vector3(0.5f, 0.8f, 0.1f));
-			okToJump_ = false;
-			
-			/*
-			if (onMiddleLane_ == true) {
-				onMiddleLane_ = false;
-				onRightLane_ = true;
-
-				if (okToJump_ == true) {
-					body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
-				}
-			}
-			else if (onLeftLane_ == true) {
-				onLeftLane_ = false;
-				onMiddleLane_ = true;
-				if (okToJump_ == true) {
-					body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
-				}
-			}
-			*/
-		}
-
-		//moveDir += Vector3::RIGHT;////////////////////
-
+		moveDir += Vector3::RIGHT;////////////////////
 	}
 
 	if (controls_.IsDown(CTRL_LEFT))
-	{
-		//moveDir += Vector3::LEFT;
-		if (okToJump_ && onLeftLane_ == false)
-		{
-			body->ApplyImpulse(Vector3(-0.5f,0.8f,0.1f));
-			okToJump_ = false;
-			/*
-			if (onMiddleLane_ == true) {
-				onMiddleLane_ = false;
-				onLeftLane_ = true;
-				if (okToJump_ == true) {
-					body->ApplyImpulse(Vector3(-3.0f - body->GetPosition().x_, 0.0f, 0.0f));
-				}
-			} else if(onRightLane_ == true){
-				onRightLane_ = false;
-				onMiddleLane_ = true;
-				if (okToJump_ == true) {
-					body->ApplyImpulse(Vector3(0.0f - body->GetPosition().x_, 0.0f, 0.0f));
-				}
-			}
-			*/
-		}
+	{	
+		moveDir += Vector3::LEFT;
 	}
 
 
 	// Normalize move vector so that diagonal strafing is not faster
+	/*
 	if (moveDir.LengthSquared() > 0.0f)
 		moveDir.Normalize();
+		*/
 
 	// If in air, allow control, but slower than when on ground
 	body->ApplyImpulse(rot * moveDir * (softGrounded ? MOVE_FORCE : INAIR_MOVE_FORCE));
-
 	if (softGrounded)
 	{
 		// When on ground, apply a braking force to limit maximum ground velocity
@@ -218,7 +161,7 @@ void Character::FixedUpdate(float timeStep)
 			{
 				body->ApplyImpulse(Vector3::UP * JUMP_FORCE);
 				okToJump_ = false;
-				animCtrl->PlayExclusive("bin/Data/Models/Mutant/Mutant_Jump.ani", 0, false, 0.2f);
+				animCtrl->PlayExclusive("bin/Data/Models/kach/Jump.ani", 0, false, 0.2f);
 			}
 		}
 		else
@@ -229,19 +172,19 @@ void Character::FixedUpdate(float timeStep)
 
 	if (!onGround_)
 	{
-		animCtrl->PlayExclusive("bin/Data/Models/Mutant/Mutant_Jump.ani", 0, false, 0.2f);
+		animCtrl->PlayExclusive("bin/Data/Models/kach/Jump.ani", 0, false, 0.2f);
 	}
 	else
 	{
 		if (softGrounded && !moveDir.Equals(Vector3::ZERO)) {
-			animCtrl->PlayExclusive("Models/Kachujin/Kachujin_Walk.ani", 0, true, 0.2f);
+			animCtrl->PlayExclusive("bin/Data/Models/kach/Armature.ani", 0, true, 0.2f);
 		}
 		else
 		{
-			animCtrl->Stop("Models/Kachujin/Kachujin_Walk.ani", 0.2f);
+			animCtrl->Stop("bin/Data/Models/kach/Armature.ani", 0.2f);
 		}
 		// Set walk animation speed proportional to velocity
-		animCtrl->SetSpeed("Models/Kachujin/Kachujin_Walk.ani", planeVelocity.Length() * 0.3f);
+		animCtrl->SetSpeed("bin/Data/Models/kach/Armature.ani", planeVelocity.Length() * 0.3f);
 	}
 	// Reset grounded flag for next frame
 	onGround_ = false;
