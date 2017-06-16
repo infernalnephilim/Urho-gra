@@ -158,7 +158,7 @@ void MainScene::CreateText()
 	// Set the environment variables URHO3D_HOME, URHO3D_PREFIX_PATH or
 	// change the engine parameter "ResourcePrefixPath" in the Setup method.
 	text_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 20);
-	text_->SetColor(Color(0, 0, 0));
+	text_->SetColor(Color(255, 255, 255));
 	text_->SetHorizontalAlignment(HA_LEFT);
 	text_->SetVerticalAlignment(VA_TOP);
 	GetSubsystem<UI>()->GetRoot()->AddChild(text_);
@@ -170,7 +170,7 @@ void MainScene::CreateText()
 	// Set the environment variables URHO3D_HOME, URHO3D_PREFIX_PATH or
 	// change the engine parameter "ResourcePrefixPath" in the Setup method.
 	textCollectible_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 20);
-	textCollectible_->SetColor(Color(0, 0, 0));
+	textCollectible_->SetColor(Color(255, 255, 255));
 	textCollectible_->SetHorizontalAlignment(HA_RIGHT);
 	textCollectible_->SetVerticalAlignment(VA_TOP);
 	GetSubsystem<UI>()->GetRoot()->AddChild(textCollectible_);
@@ -251,8 +251,8 @@ void MainScene::CreateScene()
 
 
 	CreateFloor(cache, level_);
-	CreateCollectibles(cache);
-	CreateObstacles(cache);
+	CreateCollectibles(cache, level_);
+	CreateObstacles(cache, level_);
 
 	PlayMusic(cache);
 }
@@ -263,16 +263,22 @@ void MainScene::PlayMusic(ResourceCache* cache) {
 	// Set the sound type to music so that master volume control works correctly
 	musicSource_->SetSoundType(SOUND_MUSIC);
 
-	Sound* music = cache->GetResource<Sound>("bin/Data/Music/Ninja Gods.ogg");
+	Sound* music = cache->GetResource<Sound>("bin/Data/Sounds/Escape.wav");
 	// Set the song to loop
 	music->SetLooped(true);
 
 	musicSource_->Play(music);
-	musicSource_->SetGain(0.05f);
+	musicSource_->SetGain(0.25f);
 }
 
-void MainScene::PlaySound(ResourceCache* cache) {
-	Sound* sound = cache->GetResource<Sound>("bin/Data/Sounds/collect.wav");
+void MainScene::PlaySound(ResourceCache* cache, int type) {
+	Sound* sound;
+	if (type == 0) {
+		sound = cache->GetResource<Sound>("bin/Data/Sounds/collect.wav");
+	}
+	else if (type == 1) {
+		sound = cache->GetResource<Sound>("bin/Data/Sounds/Hard_hit.wav");
+	}
 
 	if (sound)
 	{
@@ -380,7 +386,7 @@ void MainScene::DeleteFloor(int level) {
 	
 }
 
-void MainScene::CreateObstacles(ResourceCache* cache) {
+void MainScene::CreateObstacles(ResourceCache* cache, int level) {
 
 
 
@@ -405,13 +411,13 @@ void MainScene::CreateObstacles(ResourceCache* cache) {
 	}
 }
 
-void MainScene::CreateCollectibles(ResourceCache* cache) {
+void MainScene::CreateCollectibles(ResourceCache* cache, int level) {
 	const unsigned NUM_CARROTS = 30;
 	for (unsigned i = 0; i < NUM_CARROTS; ++i)
 	{
 
-		Node* carrotNode = scene_->CreateChild("Carrot" + i);
-		carrotNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.75f, int(Random(90.0f) + 5.0f) * 2));
+		Node* carrotNode = scene_->CreateChild("Carrot");
+		carrotNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.75f, int(Random(90.0f) + 5.0f) * 2 + 100.0f * level));
 		carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
 		carrotNode->SetScale(0.2f);
 		StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
@@ -459,8 +465,8 @@ void MainScene::CreateCharacter() {
 
 	// Set a capsule shape for collision
 	CollisionShape* shape = objectNode->CreateComponent<CollisionShape>();
-	shape->SetCapsule(0.7f, 1.8f, Vector3(0.0f, 0.9f, 0.0f));
-	//shape->SetCapsule(5.7f, 10.8f, Vector3(0.0f, 1.9f, 0.0f));
+	///shape->SetCapsule(0.7f, 1.8f, Vector3(0.0f, 0.9f, 0.0f));
+	shape->SetCapsule(1.9f, 1.8f, Vector3(0.0f, 1.2f, 0.0f));
 
 	// Create the character logic component, which takes care of steering the rigidbody
 	// Remember it so that we can set the controls. Use a WeakPtr because the scene hierarchy already owns it
@@ -594,12 +600,13 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 		Node* characterNode = character_->GetNode();
 
 		if (character_->gameOver_ == true) {
+			PlaySound(cache, 1);
 			GameOver();
 			character_->gameOver_ = false;
 		}
 		else {
 			if (character_->playCollectSound_ == true) {
-				PlaySound(cache);
+				PlaySound(cache, 0);
 				character_->playCollectSound_ = false;
 			}
 			//// Usuwanie sciezki, ktora bohater juz przeszedl
@@ -611,6 +618,8 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			if (characterNode->GetPosition().z_ >= 50.0f * (level_+1)) {
 				level_ += 1;
 				CreateFloor(cache, level_);
+				CreateCollectibles(cache, level_);
+				CreateObstacles(cache, level_);
 			}
 
 			UpdateScore();

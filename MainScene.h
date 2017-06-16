@@ -41,10 +41,10 @@ private:
 	void QuitGame(StringHash eventType, VariantMap& eventData);
 	// Utworzenie sceny
 	void CreateScene();
-	void CreateCollectibles(ResourceCache* cache);
+	void CreateCollectibles(ResourceCache* cache, int level);
 	void CreateFloor(ResourceCache* cache, int level);
 	void DeleteFloor(int level);
-	void CreateObstacles(ResourceCache* cache);
+	void CreateObstacles(ResourceCache* cache, int level);
 	// Utworzenie bohatera
 	void CreateCharacter();
 	void CreateUI();
@@ -53,7 +53,7 @@ private:
 	void CreateNewObstacles();
 
 	void PlayMusic(ResourceCache* cache);
-	void PlaySound(ResourceCache* cache);
+	void PlaySound(ResourceCache* cache, int type);
 
 	void Collect();
 	void UpdateScore();
