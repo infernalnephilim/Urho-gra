@@ -35,6 +35,8 @@ public:
 	virtual void Start();
 
 private:
+
+	SoundSource* musicSource_;
 	void PlayGame(StringHash eventType, VariantMap& eventData);
 	void QuitGame(StringHash eventType, VariantMap& eventData);
 	// Utworzenie sceny
@@ -49,6 +51,10 @@ private:
 	void CreateText();
 
 	void CreateNewObstacles();
+
+	void PlayMusic(ResourceCache* cache);
+	void PlaySound(ResourceCache* cache);
+
 	void Collect();
 	void UpdateScore();
 	void UpdateCollected();

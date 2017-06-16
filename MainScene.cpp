@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
 
+#include <Urho3D/Audio/Audio.h>
+#include <Urho3D/Audio/AudioEvents.h>
+#include <Urho3D/Audio/Sound.h>
+#include <Urho3D/Audio/SoundSource.h>
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Core/ProcessUtils.h>
 #include <Urho3D/Engine/Engine.h>
@@ -42,7 +46,13 @@
 URHO3D_DEFINE_APPLICATION_MAIN(MainScene)
 
 MainScene::MainScene(Context* context) :
-	App(context), time_(0), level_(0), currentLevel_(0), gamePaused_(true), gameOver_(false)
+	App(context), 
+	time_(0), 
+	level_(0), 
+	currentLevel_(0),
+	musicSource_(0),
+	gamePaused_(true), 
+	gameOver_(false)
 {
 	// Register factory and attributes for the Character component so it can be created via CreateComponent, and loaded / saved
 	Character::RegisterObject(context);
@@ -243,6 +253,39 @@ void MainScene::CreateScene()
 	CreateFloor(cache, level_);
 	CreateCollectibles(cache);
 	CreateObstacles(cache);
+
+	PlayMusic(cache);
+}
+
+void MainScene::PlayMusic(ResourceCache* cache) {
+	// Create music sound source
+	musicSource_ = scene_->CreateComponent<SoundSource>();
+	// Set the sound type to music so that master volume control works correctly
+	musicSource_->SetSoundType(SOUND_MUSIC);
+
+	Sound* music = cache->GetResource<Sound>("bin/Data/Music/Ninja Gods.ogg");
+	// Set the song to loop
+	music->SetLooped(true);
+
+	musicSource_->Play(music);
+	musicSource_->SetGain(0.05f);
+}
+
+void MainScene::PlaySound(ResourceCache* cache) {
+	Sound* sound = cache->GetResource<Sound>("bin/Data/Sounds/collect.wav");
+
+	if (sound)
+	{
+		// Create a SoundSource component for playing the sound. The SoundSource component plays
+		// non-positional audio, so its 3D position in the scene does not matter. For positional sounds the
+		// SoundSource3D component would be used instead
+		SoundSource* soundSource = scene_->CreateComponent<SoundSource>();
+		// Component will automatically remove itself when the sound finished playing
+		soundSource->SetAutoRemoveMode(REMOVE_COMPONENT);
+		soundSource->Play(sound);
+		// In case we also play music, set the sound volume below maximum so that we don't clip the output
+		//soundSource->SetGain(0.75f);
+	}
 }
 
 void MainScene::CreateFloor(ResourceCache* cache, int level) {
@@ -378,6 +421,7 @@ void MainScene::CreateCollectibles(ResourceCache* cache) {
 
 		RigidBody* carrotBody = carrotNode->CreateComponent<RigidBody>();
 		carrotBody->SetCollisionLayer(4);
+		carrotBody->SetTrigger(true);
 		CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
 		carrotShape->SetBox(Vector3::ONE);
 	}	
@@ -446,6 +490,7 @@ void MainScene::SubscribeToEvents()
 }
 void MainScene::GameOver(){
 	////////////// GAME OVER /////////////////////
+	musicSource_->Stop();
 	scene_->SetUpdateEnabled(false);
 	gameOver_ = true;
 	
@@ -550,8 +595,13 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
 		if (character_->gameOver_ == true) {
 			GameOver();
+			character_->gameOver_ = false;
 		}
 		else {
+			if (character_->playCollectSound_ == true) {
+				PlaySound(cache);
+				character_->playCollectSound_ = false;
+			}
 			//// Usuwanie sciezki, ktora bohater juz przeszedl
 			if (characterNode->GetPosition().z_ > 100.0f * (currentLevel_+ 1) + 5.0f) {
 				currentLevel_ += 1;
@@ -600,12 +650,12 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			if (!touch_ || !touch_->useGyroscope_)
 			{
 
-				character_->controls_.Set(CTRL_FORWARD, input->GetKeyDown(KEY_W));
-				character_->controls_.Set(CTRL_BACK, input->GetKeyDown(KEY_S));
-				character_->controls_.Set(CTRL_LEFT, input->GetKeyDown(KEY_A));
-				character_->controls_.Set(CTRL_RIGHT, input->GetKeyDown(KEY_D));
+				//character_->controls_.Set(CTRL_FORWARD, input->GetKeyDown(KEY_W));
+				character_->controls_.Set(CTRL_BACK, input->GetKeyDown(KEY_DOWN));
+				character_->controls_.Set(CTRL_LEFT, input->GetKeyDown(KEY_LEFT));
+				character_->controls_.Set(CTRL_RIGHT, input->GetKeyDown(KEY_RIGHT));
 			}
-			character_->controls_.Set(CTRL_JUMP, input->GetKeyDown(KEY_SPACE));
+			character_->controls_.Set(CTRL_JUMP, input->GetKeyDown(KEY_UP));
 
 			
 			////////////////// AUTO chodzenie do przodu

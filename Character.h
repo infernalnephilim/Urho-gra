@@ -40,6 +40,7 @@ public:
 	/// Movement controls. Assigned by the main program each frame.
 	Controls controls_;
 	bool gameOver_;
+	bool playCollectSound_;
 	int collected_;
 
 private:

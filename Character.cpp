@@ -26,6 +26,7 @@ Character::Character(Context* context) :
 	onLeftLane_(false),
 	onMiddleLane_(true),
 	onRightLane_(false),
+	playCollectSound_(false),
 	gameOver_(false),
 	collected_(0),
 	inAirTimer_(0.0f)
@@ -79,10 +80,10 @@ void Character::FixedUpdate(float timeStep)
 	// Velocity on the XZ plane
 	Vector3 planeVelocity(velocity.x_, 0.0f, velocity.z_);
 
-	if (controls_.IsDown(CTRL_FORWARD))
+	//if (controls_.IsDown(CTRL_FORWARD))
 		moveDir += Vector3::FORWARD;
-	if (controls_.IsDown(CTRL_BACK))
-	moveDir += Vector3::BACK;
+	//if (controls_.IsDown(CTRL_BACK))
+	///moveDir += Vector3::BACK;
 
 	if (body->GetPosition().x_ >= 1.5f)
 	{
@@ -206,6 +207,7 @@ void Character::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
 	}
 	else if (otherBody->GetCollisionLayer() == 4) {
 		//std::cout << "Kolizja z marchewka" << std::endl;
+		playCollectSound_ = true;
 		otherBody->GetNode()->Remove();
 		collected_ += 1;
 	}
