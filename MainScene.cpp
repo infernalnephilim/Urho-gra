@@ -45,6 +45,10 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(MainScene)
 
+const unsigned NUM_FLOOR = 10;
+const unsigned NUM_BOXES = 10;
+const unsigned NUM_CARROTS = 10;
+
 MainScene::MainScene(Context* context) :
 	App(context), 
 	time_(0), 
@@ -252,7 +256,7 @@ void MainScene::CreateScene()
 
 	CreateFloor(cache, level_);
 	CreateCollectibles(cache, level_);
-	CreateObstacles(cache, level_);
+	//CreateObstacles(cache, level_);
 
 	PlayMusic(cache);
 }
@@ -282,14 +286,10 @@ void MainScene::PlaySound(ResourceCache* cache, int type) {
 
 	if (sound)
 	{
-		// Create a SoundSource component for playing the sound. The SoundSource component plays
-		// non-positional audio, so its 3D position in the scene does not matter. For positional sounds the
-		// SoundSource3D component would be used instead
 		SoundSource* soundSource = scene_->CreateComponent<SoundSource>();
 		// Component will automatically remove itself when the sound finished playing
 		soundSource->SetAutoRemoveMode(REMOVE_COMPONENT);
 		soundSource->Play(sound);
-		// In case we also play music, set the sound volume below maximum so that we don't clip the output
 		//soundSource->SetGain(0.75f);
 	}
 }
@@ -297,7 +297,6 @@ void MainScene::PlaySound(ResourceCache* cache, int type) {
 void MainScene::CreateFloor(ResourceCache* cache, int level) {
 
 	// Create the floor object
-	const unsigned NUM_FLOOR = 10;
 	for (unsigned i = 0; i < NUM_FLOOR; i++)
 	{
 		Node* floorNode = scene_->CreateChild("Floor" + level);
@@ -371,7 +370,7 @@ void MainScene::CreateFloor(ResourceCache* cache, int level) {
 
 
 void MainScene::DeleteFloor(int level) {
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < NUM_FLOOR; i++) {
 		Node* removeNode = scene_->GetChild("Floor" + level);
 		scene_->RemoveChild(removeNode);
 		removeNode = scene_->GetChild("LandscapeRight" + level);
@@ -383,18 +382,25 @@ void MainScene::DeleteFloor(int level) {
 		removeNode = scene_->GetChild("RightWall" + level);
 		scene_->RemoveChild(removeNode);
 	}
+	for (int i = 0; i < NUM_BOXES; i++) {
+		Node* removeNode = scene_->GetChild("Box" + level);
+		scene_->RemoveChild(removeNode);
+	}
+	for (int i = 0; i < NUM_CARROTS; i++) {
+		Node* removeNode = scene_->GetChild("Carrot" + level);
+		scene_->RemoveChild(removeNode);
+	}
 	
 }
 
 void MainScene::CreateObstacles(ResourceCache* cache, int level) {
 
 
-
-	const unsigned NUM_BOXES = 30;
 	for (unsigned i = 0; i < NUM_BOXES; ++i)
 	{
-		Node* objectNode = scene_->CreateChild("Box");
-		objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.0f, int(Random(90.0f) + 5.0f) * 3));
+		Node* objectNode = scene_->CreateChild("Box" + level);
+		objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.0f, int(i * 100/NUM_BOXES) + 100.0f * level));
+		std::cout << objectNode->GetPosition().z_ << std::endl;
 		//objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
 		//objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
 		StaticModel* object5 = objectNode->CreateComponent<StaticModel>();
@@ -412,12 +418,11 @@ void MainScene::CreateObstacles(ResourceCache* cache, int level) {
 }
 
 void MainScene::CreateCollectibles(ResourceCache* cache, int level) {
-	const unsigned NUM_CARROTS = 30;
 	for (unsigned i = 0; i < NUM_CARROTS; ++i)
 	{
 
-		Node* carrotNode = scene_->CreateChild("Carrot");
-		carrotNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.75f, int(Random(90.0f) + 5.0f) * 2 + 100.0f * level));
+		Node* carrotNode = scene_->CreateChild("Carrot" + level);
+		carrotNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 1.5f, int(i * 100 / NUM_BOXES) + 100.0f * level));
 		carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
 		carrotNode->SetScale(0.2f);
 		StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
@@ -466,7 +471,7 @@ void MainScene::CreateCharacter() {
 	// Set a capsule shape for collision
 	CollisionShape* shape = objectNode->CreateComponent<CollisionShape>();
 	///shape->SetCapsule(0.7f, 1.8f, Vector3(0.0f, 0.9f, 0.0f));
-	shape->SetCapsule(1.9f, 1.8f, Vector3(0.0f, 1.2f, 0.0f));
+	shape->SetCapsule(1.9f, 2.8f, Vector3(0.0f, 1.2f, 0.0f));
 
 	// Create the character logic component, which takes care of steering the rigidbody
 	// Remember it so that we can set the controls. Use a WeakPtr because the scene hierarchy already owns it
@@ -659,7 +664,7 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			if (!touch_ || !touch_->useGyroscope_)
 			{
 
-				//character_->controls_.Set(CTRL_FORWARD, input->GetKeyDown(KEY_W));
+				character_->controls_.Set(CTRL_FORWARD, input->GetKeyDown(KEY_W));
 				character_->controls_.Set(CTRL_BACK, input->GetKeyDown(KEY_DOWN));
 				character_->controls_.Set(CTRL_LEFT, input->GetKeyDown(KEY_LEFT));
 				character_->controls_.Set(CTRL_RIGHT, input->GetKeyDown(KEY_RIGHT));

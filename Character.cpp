@@ -80,10 +80,10 @@ void Character::FixedUpdate(float timeStep)
 	// Velocity on the XZ plane
 	Vector3 planeVelocity(velocity.x_, 0.0f, velocity.z_);
 
-	//if (controls_.IsDown(CTRL_FORWARD))
+	if (controls_.IsDown(CTRL_FORWARD))
 		moveDir += Vector3::FORWARD;
-	//if (controls_.IsDown(CTRL_BACK))
-	///moveDir += Vector3::BACK;
+	if (controls_.IsDown(CTRL_BACK))
+		moveDir += Vector3::BACK;
 
 	if (body->GetPosition().x_ >= 1.5f)
 	{
