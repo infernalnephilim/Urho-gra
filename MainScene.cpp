@@ -15,6 +15,8 @@
 #include <Urho3D/Graphics/Light.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/Graphics/ParticleEmitter.h>
+#include <Urho3D/Graphics/ParticleEffect.h>
 #include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Input/Controls.h>
@@ -162,7 +164,7 @@ void MainScene::CreateText()
 	// Set the environment variables URHO3D_HOME, URHO3D_PREFIX_PATH or
 	// change the engine parameter "ResourcePrefixPath" in the Setup method.
 	text_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 20);
-	text_->SetColor(Color(255, 255, 255));
+	text_->SetColor(Color(255, 0, 0));
 	text_->SetHorizontalAlignment(HA_LEFT);
 	text_->SetVerticalAlignment(VA_TOP);
 	GetSubsystem<UI>()->GetRoot()->AddChild(text_);
@@ -215,9 +217,9 @@ void MainScene::CreateScene()
 	Node* zoneNode = scene_->CreateChild("Zone");
 	Zone* zone = zoneNode->CreateComponent<Zone>();
 	zone->SetAmbientColor(Color(0.15f, 0.15f, 0.15f));
-	zone->SetFogColor(Color(0.5f, 0.5f, 0.7f));
-	zone->SetFogStart(100.0f);
-	zone->SetFogEnd(300.0f);
+	zone->SetFogColor(Color(0.6f, 0.5f, 0.5f));
+	zone->SetFogStart(20.0f);
+	zone->SetFogEnd(100.0f);
 	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
 
 	// Create a directional light with cascaded shadow mapping
@@ -259,6 +261,16 @@ void MainScene::CreateScene()
 	//CreateObstacles(cache, level_);
 
 	PlayMusic(cache);
+
+
+	Node* efekt = scene_->CreateChild("Efekt");
+	efekt->SetPosition(Vector3(0.0f, 1.0f, 100.0f));
+	efekt->SetScale(Vector3(10.0f, 10.0f, 1.0f));
+	ParticleEmitter* emitter = efekt->CreateComponent<ParticleEmitter>();
+	emitter->SetEffect(cache->GetResource<ParticleEffect>("bin/Data/Particle/Dust.xml"));
+
+	StaticModel* object = efekt->CreateComponent<StaticModel>(LOCAL);
+	//object->duration = 10.f;
 }
 
 void MainScene::PlayMusic(ResourceCache* cache) {
@@ -326,6 +338,32 @@ void MainScene::CreateFloor(ResourceCache* cache, int level) {
 		landscapeObject2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 		landscapeObject2->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
 
+		float randomScale = Random(0.5f) + 1.0f;
+		float randomTree = Random(2.0f);
+		Node* treeNode = scene_->CreateChild("Tree" + level);
+		treeNode->SetPosition(Vector3(Random(8.0f) + 6.0f, -0.5f, 5.0f + 10.0f * i + 100.0f * level));
+		treeNode->SetScale(Vector3(randomScale, randomScale, randomScale));
+		StaticModel* treeObject = treeNode->CreateComponent<StaticModel>();
+		if (randomTree < 0.5f) {
+			treeObject->SetModel(cache->GetResource<Model>("bin/Data/Models/tree3/tree.mdl"));
+			treeObject->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/torch_wood.xml"));
+			treeObject->SetCastShadows(true);
+			treeObject = treeNode->CreateComponent<StaticModel>();
+			treeObject->SetModel(cache->GetResource<Model>("bin/Data/Models/tree3/leaves.mdl"));
+			treeObject->SetMaterial(cache->GetResource<Material>("bin/Data/Models/tree3/Material.004.xml"));
+			treeObject->SetCastShadows(true);
+		}
+		else {
+			treeObject->SetModel(cache->GetResource<Model>("bin/Data/Models/tree2/tree.mdl"));
+			treeObject->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/torch_wood.xml"));
+			treeObject->SetCastShadows(true);
+			treeObject = treeNode->CreateComponent<StaticModel>();
+			treeObject->SetModel(cache->GetResource<Model>("bin/Data/Models/tree2/leaves.mdl"));
+			treeObject->SetMaterial(cache->GetResource<Material>("bin/Data/Models/tree3/Material.004.xml"));
+			treeObject->SetCastShadows(true);
+
+		}
+		
 		Node* landscapeNodeLeft = scene_->CreateChild("LandscapeLeft"+level);
 		landscapeNodeLeft->SetPosition(Vector3(-(10.0f / 2 + 4.5f), -0.5f, 5.0f + 10.0f * i + 100.0f * level));
 		landscapeNodeLeft->SetScale(Vector3(10.0f, 1.0f, 10.0f));
@@ -339,13 +377,27 @@ void MainScene::CreateFloor(ResourceCache* cache, int level) {
 		landscapeObjectLeft2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
 		landscapeObjectLeft2->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/Path/grass.xml"));
 
+
+		float randomScale2 = Random(0.2f) + 1.0f;
+		Node* treeNode2 = scene_->CreateChild("Tree" + level);
+		treeNode2->SetPosition(Vector3(-(Random(8.0f) + 6.0f), -0.5f, 5.0f + 10.0f * i + 100.0f * level));
+		treeNode2->SetScale(Vector3(randomScale, randomScale, randomScale));
+		StaticModel* treeObject2 = treeNode2->CreateComponent<StaticModel>();
+		treeObject2->SetModel(cache->GetResource<Model>("bin/Data/Models/tree2/tree.mdl"));
+		treeObject2->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/torch_wood.xml"));
+		treeObject2->SetCastShadows(true);
+		treeObject2 = treeNode2->CreateComponent<StaticModel>();
+		treeObject2->SetModel(cache->GetResource<Model>("bin/Data/Models/tree2/leaves.mdl"));
+		treeObject2->SetMaterial(cache->GetResource<Material>("bin/Data/Models/tree2/Material.004.xml"));
+		treeObject2->SetCastShadows(true);
+
 		/////////////////////////////////////
 		Node* leftWallNode = scene_->CreateChild("LeftWall" + level);
 		leftWallNode->SetPosition(Vector3(-4.0f, 2.0f, 5.0f + 10.0f * i + 100.0f * level));
 		leftWallNode->SetScale(Vector3(1.0f, 4.0f, 10.0f));
 		StaticModel* object2 = leftWallNode->CreateComponent<StaticModel>();
 		object2->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-		object2->SetMaterial(cache->GetResource<Material>("Materials/GreenTransparent.xml"));
+		object2->SetMaterial(cache->GetResource<Material>("Materials/Smoke.xml"));
 
 		RigidBody* body2 = leftWallNode->CreateComponent<RigidBody>();
 		body2->SetCollisionLayer(2);
@@ -357,7 +409,7 @@ void MainScene::CreateFloor(ResourceCache* cache, int level) {
 		rightWallNode->SetScale(Vector3(1.0f, 4.0f, 10.0f));
 		StaticModel* object3 = rightWallNode->CreateComponent<StaticModel>();
 		object3->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-		object3->SetMaterial(cache->GetResource<Material>("Materials/GreenTransparent.xml"));
+		object3->SetMaterial(cache->GetResource<Material>("Materials/Smoke.xml"));
 
 		RigidBody* body3 = rightWallNode->CreateComponent<RigidBody>();
 		body3->SetCollisionLayer(2);
@@ -600,7 +652,6 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
 	if (character_)
 	{
-
 		ResourceCache* cache = GetSubsystem<ResourceCache>();
 		Node* characterNode = character_->GetNode();
 
@@ -610,21 +661,30 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			character_->gameOver_ = false;
 		}
 		else {
+			Node* efekt = scene_->GetChild("Efekt");
+			efekt->SetPosition(Vector3(0.0f, 0.0f, characterNode->GetPosition().z_ + 99.0f));
+			
+
+
 			if (character_->playCollectSound_ == true) {
 				PlaySound(cache, 0);
 				character_->playCollectSound_ = false;
 			}
 			//// Usuwanie sciezki, ktora bohater juz przeszedl
-			if (characterNode->GetPosition().z_ > 100.0f * (currentLevel_+ 1) + 5.0f) {
+			if (characterNode->GetPosition().z_ > 100.0f * (currentLevel_+ 1)) {
+				DeleteFloor(currentLevel_);
+				
 				currentLevel_ += 1;
-				DeleteFloor(currentLevel_ - 1);
+				character_->speed_ += 0.1;
+				
 			}
 			//// Tworzenie nowej œcie¿ki
-			if (characterNode->GetPosition().z_ >= 50.0f * (level_+1)) {
+			if (characterNode->GetPosition().z_ >= 100.0f * (level_) + 20.0f) {
+				//level_ += 1;
+				CreateFloor(cache, level_+ 1);
+				CreateCollectibles(cache, level_+ 1);
+				CreateObstacles(cache, level_+1);
 				level_ += 1;
-				CreateFloor(cache, level_);
-				CreateCollectibles(cache, level_);
-				CreateObstacles(cache, level_);
 			}
 
 			UpdateScore();
@@ -739,6 +799,6 @@ void MainScene::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 
 void MainScene::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
 {
-	GetSubsystem<Renderer>()->DrawDebugGeometry(true);
+	//GetSubsystem<Renderer>()->DrawDebugGeometry(true);
 }
 

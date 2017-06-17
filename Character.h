@@ -43,6 +43,8 @@ public:
 	bool playCollectSound_;
 	int collected_;
 
+	float speed_;
+
 private:
 	/// Handle physics collision event.
 	void HandleNodeCollision(StringHash eventType, VariantMap& eventData);

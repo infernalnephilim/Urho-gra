@@ -28,6 +28,7 @@ Character::Character(Context* context) :
 	onRightLane_(false),
 	playCollectSound_(false),
 	gameOver_(false),
+	speed_(1.0f),
 	collected_(0),
 	inAirTimer_(0.0f)
 {
@@ -148,7 +149,7 @@ void Character::FixedUpdate(float timeStep)
 		*/
 
 	// If in air, allow control, but slower than when on ground
-	body->ApplyImpulse(rot * moveDir * (softGrounded ? MOVE_FORCE : INAIR_MOVE_FORCE));
+	body->ApplyImpulse(rot * moveDir * speed_ * (softGrounded ? MOVE_FORCE : INAIR_MOVE_FORCE));
 	if (softGrounded)
 	{
 		// When on ground, apply a braking force to limit maximum ground velocity
