@@ -1,0 +1,7 @@
+<material>
+	<technique name="Techniques/DiffNormal.xml"/>
+	<texture name="bin/Data/Models/dead_tree/bark.jpg" unit="diffuse"/>
+	<texture name="bin/Data/Models/dead_tree/normal.jpg" unit="normal"/>
+	<parameter name="MatDiffColor" value="0.431176 0.26258 0.164708 1"/>
+	<parameter name="MatSpecColor" value="0.1 0.1 0.1 50"/>
+</material>

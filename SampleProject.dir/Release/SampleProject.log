@@ -1,9 +1,11 @@
-﻿  Character.cpp
+﻿  MainScene.cpp
 F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): warning C4005: 'URHO3D_STATIC_DEFINE': macro redefinition
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(35): note: command-line arguments:  see previous definition of 'URHO3D_STATIC_DEFINE'
 F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): warning C4005: 'URHO3D_D3D11': macro redefinition
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): note: command-line arguments:  see previous definition of 'URHO3D_D3D11'
 F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): warning C4005: 'URHO3D_SSE': macro redefinition
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): note: command-line arguments:  see previous definition of 'URHO3D_SSE'
+MainScene.cpp(458): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(481): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
      Creating library F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/Release/SampleProject.lib and object F:/Dokumenty/Studia/Programowanie gier w C++/Gra/Pliki gry/Release/SampleProject.exp
   SampleProject.vcxproj -> F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\bin\SampleProject.exe

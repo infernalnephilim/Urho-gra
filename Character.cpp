@@ -79,7 +79,7 @@ void Character::FixedUpdate(float timeStep)
 	Vector3 moveDir = Vector3::ZERO;
 	const Vector3& velocity = body->GetLinearVelocity();
 	// Velocity on the XZ plane
-	Vector3 planeVelocity(velocity.x_, 0.0f, velocity.z_);
+	Vector3 planeVelocity(0.0f, 0.0f, velocity.z_);
 
 	//if (controls_.IsDown(CTRL_FORWARD))
 		moveDir += Vector3::FORWARD;
@@ -125,11 +125,11 @@ void Character::FixedUpdate(float timeStep)
 	}
 	}
 	*/
-	
+	/*
 	std::cout << "LeftLane = " << onLeftLane_ << std::endl;
 	std::cout << "MiddleLane = " << onMiddleLane_ << std::endl;
 	std::cout << "RightLane = " << onRightLane_ << std::endl;
-	
+	*/
 
 	if (controls_.IsDown(CTRL_RIGHT))
 	{
@@ -164,7 +164,7 @@ void Character::FixedUpdate(float timeStep)
 			{
 				body->ApplyImpulse(Vector3::UP * JUMP_FORCE);
 				okToJump_ = false;
-				animCtrl->PlayExclusive("bin/Data/Models/kach/Jump.ani", 0, false, 0.2f);
+				animCtrl->PlayExclusive("bin/Data/Models/kach/jumping.ani", 0, false, 0.5f);
 			}
 		}
 		else
@@ -175,19 +175,19 @@ void Character::FixedUpdate(float timeStep)
 
 	if (!onGround_)
 	{
-		animCtrl->PlayExclusive("bin/Data/Models/kach/Jump.ani", 0, false, 0.2f);
+		animCtrl->PlayExclusive("bin/Data/Models/kach/jumping.ani", 0, false, 0.5f);
 	}
 	else
 	{
 		if (softGrounded && !moveDir.Equals(Vector3::ZERO)) {
-			animCtrl->PlayExclusive("bin/Data/Models/kach/Armature.ani", 0, true, 0.2f);
+			animCtrl->PlayExclusive("bin/Data/Models/kach/run2.ani", 0, true, 0.2f);
 		}
 		else
 		{
-			animCtrl->Stop("bin/Data/Models/kach/Armature.ani", 0.2f);
+			animCtrl->Stop("bin/Data/Models/kach/run2.ani", 0.2f);
 		}
 		// Set walk animation speed proportional to velocity
-		animCtrl->SetSpeed("bin/Data/Models/kach/Armature.ani", planeVelocity.Length() * 0.3f);
+		animCtrl->SetSpeed("bin/Data/Models/kach/run2.ani", planeVelocity.Length() * 0.2f);
 	}
 	// Reset grounded flag for next frame
 	onGround_ = false;
@@ -203,7 +203,7 @@ void Character::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
 
 	// If the other collision shape belongs to static geometry, perform world collision
 
-	if (otherBody->GetCollisionLayer() == 3) {
+	if (otherBody->GetCollisionLayer() == 3 || otherBody->GetCollisionLayer() == 6) {
 		//std::cout << "Kolizja z box" << std::endl;
 		gameOver_ = true;
 	}

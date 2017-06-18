@@ -1,6 +1,5 @@
 <material>
 	<technique name="Techniques/Diff.xml"/>
 	<texture name="bin/Data/Models/marchewka/Textures/marchewka.png" unit="diffuse"/>
-	<parameter name="MatDiffColor" value="0.8 0.244074 0.0347574 1"/>
 	<parameter name="MatSpecColor" value="0 0 0 50"/>
 </material>

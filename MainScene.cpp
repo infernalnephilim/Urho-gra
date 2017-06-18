@@ -244,13 +244,6 @@ void MainScene::CreateScene()
 	shapeX->SetBox(Vector3::ONE);
 
 
-	CreateFloor(cache, level_);
-	CreateCollectibles(cache, level_);
-	//CreateObstacles(cache, level_);
-
-	PlayMusic(cache);
-
-
 	Node* efekt = scene_->CreateChild("Efekt");
 	efekt->SetPosition(Vector3(0.0f, 1.0f, 100.0f));
 	efekt->SetScale(Vector3(10.0f, 5.0f, 1.0f));
@@ -258,7 +251,33 @@ void MainScene::CreateScene()
 	emitter->SetEffect(cache->GetResource<ParticleEffect>("bin/Data/Particle/Dust.xml"));
 
 	StaticModel* object = efekt->CreateComponent<StaticModel>(LOCAL);
-	//object->duration = 10.f;
+
+
+	CreateFloor(cache, level_);
+	CreateCollectibles(cache, level_);
+	//CreateObstacles(cache, level_);
+
+
+
+	Node* deadTreeNode = scene_->CreateChild("DeadTree");
+	deadTreeNode->SetPosition(Vector3(3.5, 0.2f, 20.0f));
+	deadTreeNode->SetRotation(Quaternion(0.0f, -90.0f, 0.0f));
+	//deadTreeNode->SetScale(Vector3(0.5f, 0.5f, 0.5f));
+	StaticModel* deadTree = deadTreeNode->CreateComponent<StaticModel>();
+	deadTree->SetModel(cache->GetResource<Model>("bin/Data/Models/dead_tree/tree.mdl"));
+	deadTree->SetMaterial(cache->GetResource<Material>("bin/Data/Models/dead_tree/bark.xml"));
+	deadTree->SetCastShadows(true);
+
+	RigidBody* deadTreeBody = deadTreeNode->CreateComponent<RigidBody>();
+	deadTreeBody->SetCollisionLayer(3);
+	// Bigger boxes will be heavier and harder to move
+	//deadTreeBody->SetMass(10.0f);
+	CollisionShape* deadTreeShape = deadTreeNode->CreateComponent<CollisionShape>();
+	deadTreeShape->SetTriangleMesh(deadTree->GetModel(), 0);
+
+
+	PlayMusic(cache);
+
 }
 
 void MainScene::PlayMusic(ResourceCache* cache) {
@@ -460,9 +479,9 @@ void MainScene::CreateObstacles(ResourceCache* cache, int level) {
 void MainScene::CreateCollectibles(ResourceCache* cache, int level) {
 	for (unsigned i = 0; i < NUM_CARROTS; ++i)
 	{
-
+		int randomPosX = int(Random(3.0f));
 		Node* carrotNode = scene_->CreateChild("Carrot" + level);
-		carrotNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 1.5f, int(i * 100 / NUM_BOXES) + 100.0f * level));
+		carrotNode->SetPosition(Vector3((randomPosX - 1.0f) * 2.5, 1.5f, int(i * 100 / NUM_CARROTS) + 100.0f * level));
 		carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
 		carrotNode->SetScale(0.2f);
 		StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
@@ -475,7 +494,16 @@ void MainScene::CreateCollectibles(ResourceCache* cache, int level) {
 		carrotBody->SetTrigger(true);
 		CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
 		carrotShape->SetBox(Vector3::ONE);
+		
+		Node* efekt = scene_->CreateChild("Effects" + level);
+		efekt->SetPosition(Vector3((randomPosX - 1.0f) * 2.5, 0.0f, int(i * 100 / NUM_CARROTS) + 100.0f * level));
+		efekt->SetScale(Vector3(1.0f, 0.2f, 1.0f));
+		ParticleEmitter* emitter = efekt->CreateComponent<ParticleEmitter>();
+		emitter->SetEffect(cache->GetResource<ParticleEffect>("bin/Data/Particle/torch_fire.xml"));
+
+		StaticModel* object = efekt->CreateComponent<StaticModel>(LOCAL);
 	}	
+
 
 }
 void MainScene::CreateCharacter() {
@@ -511,7 +539,7 @@ void MainScene::CreateCharacter() {
 	// Set a capsule shape for collision
 	CollisionShape* shape = objectNode->CreateComponent<CollisionShape>();
 	///shape->SetCapsule(0.7f, 1.8f, Vector3(0.0f, 0.9f, 0.0f));
-	shape->SetCapsule(1.9f, 2.8f, Vector3(0.0f, 1.2f, 0.0f));
+	shape->SetCapsule(1.9f, 3.0f, Vector3(0.0f, 1.2f, 0.0f));
 
 	// Create the character logic component, which takes care of steering the rigidbody
 	// Remember it so that we can set the controls. Use a WeakPtr because the scene hierarchy already owns it
@@ -519,7 +547,7 @@ void MainScene::CreateCharacter() {
 	character_ = objectNode->CreateComponent<Character>();
 	//////////////////
 
-	File saveFile(context_, GetSubsystem<FileSystem>()->GetProgramDir() + "bin/Data/Scenes/GameScene.xml", FILE_WRITE);
+	File saveFile(context_, GetSubsystem<FileSystem>()->GetProgramDir() + "Data/Scenes/GameScene.xml", FILE_WRITE);
 	scene_->SaveXML(saveFile);
 	std::cout << "SAAAAAAAAAAAAAAAVE" << std::endl;
 }
@@ -600,10 +628,6 @@ void MainScene::CreateNewObstacles() {
 	{
 		ResourceCache* cache = GetSubsystem<ResourceCache>();
 		Node* characterNode = character_->GetNode();
-
-
-
-
 
 		////////////////// Wodne szesciany
 		if (characterNode->GetPosition().z_ > 10 && characterNode->GetPosition().z_ < 11)
