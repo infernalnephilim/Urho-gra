@@ -156,13 +156,8 @@ void MainScene::CreateText()
 	// CZAS
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
-	// Let's create some text to display.
 	text_ = new Text(context_);
-	// Text will be updated later in the E_UPDATE handler. Keep readin'.
 	text_->SetText("Score ");
-	// If the engine cannot find the font, it comes with Urho3D.
-	// Set the environment variables URHO3D_HOME, URHO3D_PREFIX_PATH or
-	// change the engine parameter "ResourcePrefixPath" in the Setup method.
 	text_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 20);
 	text_->SetColor(Color(255, 0, 0));
 	text_->SetHorizontalAlignment(HA_LEFT);
@@ -170,11 +165,7 @@ void MainScene::CreateText()
 	GetSubsystem<UI>()->GetRoot()->AddChild(text_);
 
 	textCollectible_ = new Text(context_);
-	// Text will be updated later in the E_UPDATE handler. Keep readin'.
 	textCollectible_->SetText("Items ");
-	// If the engine cannot find the font, it comes with Urho3D.
-	// Set the environment variables URHO3D_HOME, URHO3D_PREFIX_PATH or
-	// change the engine parameter "ResourcePrefixPath" in the Setup method.
 	textCollectible_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 20);
 	textCollectible_->SetColor(Color(255, 255, 255));
 	textCollectible_->SetHorizontalAlignment(HA_RIGHT);
@@ -184,11 +175,8 @@ void MainScene::CreateText()
 	// POZYCJA BOHATERA
 
 	text2_ = new Text(context_);
-	// Text will be updated later in the E_UPDATE handler. Keep readin'.
+
 	text2_->SetText("POS ");
-	// If the engine cannot find the font, it comes with Urho3D.
-	// Set the environment variables URHO3D_HOME, URHO3D_PREFIX_PATH or
-	// change the engine parameter "ResourcePrefixPath" in the Setup method.
 	text2_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 20);
 	text2_->SetColor(Color(1, 0, 0));
 	text2_->SetHorizontalAlignment(HA_RIGHT);
@@ -217,18 +205,18 @@ void MainScene::CreateScene()
 	Node* zoneNode = scene_->CreateChild("Zone");
 	Zone* zone = zoneNode->CreateComponent<Zone>();
 	zone->SetAmbientColor(Color(0.15f, 0.15f, 0.15f));
-	zone->SetFogColor(Color(0.6f, 0.5f, 0.5f));
+	zone->SetFogColor(Color(0.25f, 0.3f, 0.31f));
 	zone->SetFogStart(20.0f);
 	zone->SetFogEnd(100.0f);
 	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
 
 	// Create a directional light with cascaded shadow mapping
 	Node* lightNode = scene_->CreateChild("DirectionalLight");
-	lightNode->SetDirection(Vector3(0.3f, -0.5f, 0.425f));
+	lightNode->SetDirection(Vector3(0.3f, -2.0f, 0.425f));
 	Light* light = lightNode->CreateComponent<Light>();
 	light->SetLightType(LIGHT_DIRECTIONAL);
 	light->SetCastShadows(true);
-	light->SetShadowBias(BiasParameters(0.00025f, 0.5f));
+	light->SetShadowBias(BiasParameters(0.00025f, 0.7f));
 	light->SetShadowCascade(CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
 	light->SetSpecularIntensity(0.5f);
 
@@ -237,7 +225,7 @@ void MainScene::CreateScene()
 	skyNode->SetScale(100.0f); // The scale actually does not matter
 	Skybox* skybox = skyNode->CreateComponent<Skybox>();
 	skybox->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-	skybox->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/SkyboxMeadow.xml"));
+	skybox->SetMaterial(cache->GetResource<Material>("bin/Data/Materials/SkyboxSunset.xml"));
 
 
 
@@ -265,7 +253,7 @@ void MainScene::CreateScene()
 
 	Node* efekt = scene_->CreateChild("Efekt");
 	efekt->SetPosition(Vector3(0.0f, 1.0f, 100.0f));
-	efekt->SetScale(Vector3(10.0f, 10.0f, 1.0f));
+	efekt->SetScale(Vector3(10.0f, 5.0f, 1.0f));
 	ParticleEmitter* emitter = efekt->CreateComponent<ParticleEmitter>();
 	emitter->SetEffect(cache->GetResource<ParticleEffect>("bin/Data/Particle/Dust.xml"));
 
@@ -494,14 +482,14 @@ void MainScene::CreateCharacter() {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 
 	Node* objectNode = scene_->CreateChild("Jack");
-	objectNode->SetPosition(Vector3(0.0f, 1.1f, 0.0f));
+	objectNode->SetPosition(Vector3(0.0f, 1.1f, 1.0f));
 	objectNode->SetScale(Vector3(0.6f, 0.6f, 0.6f));
 	//objectNode->SetRotation(Quaternion(90.0f, 0.0f, 0.0f));
 
 	// Create the rendering component + animation controller
 	AnimatedModel* object = objectNode->CreateComponent<AnimatedModel>();
 	object->SetModel(cache->GetResource<Model>("bin/Data/Models/kach/Kachujin.mdl"));
-	object->SetMaterial(cache->GetResource<Material>("bin/Data/Models/Kachujin/Materials/kachujin.mdl"));
+	object->SetMaterial(cache->GetResource<Material>("bin/Data/Models/kach/kachujin_MAT.xml"));
 	object->SetCastShadows(true);
 	objectNode->CreateComponent<AnimationController>();
 
@@ -686,9 +674,11 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 				CreateObstacles(cache, level_+1);
 				level_ += 1;
 			}
-
-			UpdateScore();
-			UpdateCollected();
+			if (gamePaused_ == false) {
+				UpdateScore();
+				UpdateCollected();
+			}
+			
 
 			// update wyswietlanej pozycji bohatera
 			std::string str2;
@@ -744,7 +734,31 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 			// Turn on/off gyroscope on mobile platform
 			if (touch_ && input->GetKeyPress(KEY_G))
 				touch_->useGyroscope_ = !touch_->useGyroscope_;
-
+			if (input->GetKeyPress(KEY_P))
+			{
+				UI* ui = GetSubsystem<UI>();
+				ResourceCache* cache = GetSubsystem<ResourceCache>();
+				if (gamePaused_ == false) {
+					gamePaused_ = true;
+					scene_->SetUpdateEnabled(false);
+					//std::cout << character_->gameOver_ << std::endl;
+					
+					ui->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("bin/Data/UI/DefaultStyle.xml"));
+					gamePausedText_ = new Text(context_);
+					gamePausedText_->SetText("Game Paused");
+					gamePausedText_->SetFont(cache->GetResource<Font>("bin/Data/Fonts/BlueHighway.ttf"), 80);
+					gamePausedText_->SetColor(Color(1, 1, 1));
+					gamePausedText_->SetHorizontalAlignment(HA_CENTER);
+					gamePausedText_->SetVerticalAlignment(VA_CENTER);
+					GetSubsystem<UI>()->GetRoot()->AddChild(gamePausedText_);
+				}
+				else {
+					gamePaused_ = false;
+					scene_->SetUpdateEnabled(true);
+					GetSubsystem<UI>()->GetRoot()->RemoveChild(gamePausedText_);
+				}
+				
+			}
 			// Check for loading / saving the scene
 			if (input->GetKeyPress(KEY_F5))
 			{

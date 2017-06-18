@@ -1,0 +1,9 @@
+<cubemap>
+    <face name="bin/Data/Textures/Sunset/front.dds" />
+    <face name="bin/Data/Textures/Sunset/back.dds" />
+    <face name="bin/Data/Textures/Sunset/top.dds" />
+    <face name="bin/Data/Textures/Sunset/top.dds" />
+    <face name="bin/Data/Textures/Sunset/left.dds" />
+    <face name="bin/Data/Textures/Sunset/right.dds" />
+    <quality low="0" />
+</cubemap>

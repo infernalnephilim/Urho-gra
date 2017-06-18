@@ -20,6 +20,7 @@ public:
 	SharedPtr<Text> textCollectible_;
 	SharedPtr<Text> text2_;
 	SharedPtr<Text> gameOverText_;
+	SharedPtr<Text> gamePausedText_;
 	float time_;
 	int collected_;
 	int level_;

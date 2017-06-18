@@ -81,10 +81,10 @@ void Character::FixedUpdate(float timeStep)
 	// Velocity on the XZ plane
 	Vector3 planeVelocity(velocity.x_, 0.0f, velocity.z_);
 
-	if (controls_.IsDown(CTRL_FORWARD))
+	//if (controls_.IsDown(CTRL_FORWARD))
 		moveDir += Vector3::FORWARD;
-	if (controls_.IsDown(CTRL_BACK))
-		moveDir += Vector3::BACK;
+	//if (controls_.IsDown(CTRL_BACK))
+		//moveDir += Vector3::BACK;
 
 	if (body->GetPosition().x_ >= 1.5f)
 	{
@@ -125,15 +125,16 @@ void Character::FixedUpdate(float timeStep)
 	}
 	}
 	*/
-	/*
+	
 	std::cout << "LeftLane = " << onLeftLane_ << std::endl;
 	std::cout << "MiddleLane = " << onMiddleLane_ << std::endl;
 	std::cout << "RightLane = " << onRightLane_ << std::endl;
-	*/
+	
 
 	if (controls_.IsDown(CTRL_RIGHT))
 	{
 		moveDir += Vector3::RIGHT;////////////////////
+		//body->ApplyImpulse(Vector3(3.0f - body->GetPosition().x_, 5.0f, 0.0f));
 	}
 
 	if (controls_.IsDown(CTRL_LEFT))
@@ -143,10 +144,10 @@ void Character::FixedUpdate(float timeStep)
 
 
 	// Normalize move vector so that diagonal strafing is not faster
-	/*
+	
 	if (moveDir.LengthSquared() > 0.0f)
 		moveDir.Normalize();
-		*/
+		
 
 	// If in air, allow control, but slower than when on ground
 	body->ApplyImpulse(rot * moveDir * speed_ * (softGrounded ? MOVE_FORCE : INAIR_MOVE_FORCE));
