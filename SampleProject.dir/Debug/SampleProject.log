@@ -5,9 +5,18 @@ F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\inc
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(37): note: command-line arguments:  see previous definition of 'URHO3D_D3D11'
 F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): warning C4005: 'URHO3D_SSE': macro redefinition
   F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Urho3D-master\Urho3D-master\include\Urho3D/Urho3D.h(38): note: command-line arguments:  see previous definition of 'URHO3D_SSE'
-MainScene.cpp(461): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-MainScene.cpp(484): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-MainScene.cpp(499): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-MainScene.cpp(604): warning C4305: '+=': truncation from 'double' to 'float'
-MainScene.cpp(690): warning C4305: '+=': truncation from 'double' to 'float'
+MainScene.cpp(449): warning C4018: '<': signed/unsigned mismatch
+MainScene.cpp(452): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(474): warning C4018: '<': signed/unsigned mismatch
+MainScene.cpp(511): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(528): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(547): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(570): warning C4018: '<': signed/unsigned mismatch
+MainScene.cpp(574): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(589): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(599): warning C4018: '<': signed/unsigned mismatch
+MainScene.cpp(603): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(618): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+MainScene.cpp(717): warning C4305: '+=': truncation from 'double' to 'float'
+MainScene.cpp(776): warning C4305: '+=': truncation from 'double' to 'float'
   SampleProject.vcxproj -> F:\Dokumenty\Studia\Programowanie gier w C++\Gra\Pliki gry\bin\SampleProject_d.exe

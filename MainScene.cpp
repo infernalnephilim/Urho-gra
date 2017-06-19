@@ -48,8 +48,10 @@
 URHO3D_DEFINE_APPLICATION_MAIN(MainScene)
 
 const unsigned NUM_FLOOR = 10;
-const unsigned NUM_BOXES = 10;
-const unsigned NUM_CARROTS = 10;
+int NUM_BOXES = 10;
+int NUM_CARROTS = 10;
+
+int prevObstaclesNr = 0;
 
 MainScene::MainScene(Context* context) :
 	App(context), 
@@ -255,25 +257,7 @@ void MainScene::CreateScene()
 
 	CreateFloor(cache, level_);
 	CreateCollectibles(cache, level_);
-	//CreateObstacles(cache, level_);
-
-
-
-	Node* deadTreeNode = scene_->CreateChild("DeadTree");
-	deadTreeNode->SetPosition(Vector3(3.5, 0.2f, 20.0f));
-	deadTreeNode->SetRotation(Quaternion(0.0f, -90.0f, 0.0f));
-	//deadTreeNode->SetScale(Vector3(0.5f, 0.5f, 0.5f));
-	StaticModel* deadTree = deadTreeNode->CreateComponent<StaticModel>();
-	deadTree->SetModel(cache->GetResource<Model>("bin/Data/Models/dead_tree/tree.mdl"));
-	deadTree->SetMaterial(cache->GetResource<Material>("bin/Data/Models/dead_tree/bark.xml"));
-	deadTree->SetCastShadows(true);
-
-	RigidBody* deadTreeBody = deadTreeNode->CreateComponent<RigidBody>();
-	deadTreeBody->SetCollisionLayer(3);
-	// Bigger boxes will be heavier and harder to move
-	//deadTreeBody->SetMass(10.0f);
-	CollisionShape* deadTreeShape = deadTreeNode->CreateComponent<CollisionShape>();
-	deadTreeShape->SetTriangleMesh(deadTree->GetModel(), 0);
+	CreateObstacles(cache, level_);
 
 
 	PlayMusic(cache);
@@ -430,7 +414,9 @@ void MainScene::CreateFloor(ResourceCache* cache, int level) {
 
 void MainScene::DeleteFloor(int level) {
 	for (int i = 0; i < NUM_FLOOR; i++) {
-		Node* removeNode = scene_->GetChild("Floor" + level);
+		Node* removeNode = scene_->GetChild("Floor");
+		scene_->RemoveChild(removeNode);
+		removeNode = scene_->GetChild("Floor" + level);
 		scene_->RemoveChild(removeNode);
 		removeNode = scene_->GetChild("LandscapeRight" + level);
 		scene_->RemoveChild(removeNode);
@@ -440,6 +426,8 @@ void MainScene::DeleteFloor(int level) {
 		scene_->RemoveChild(removeNode);
 		removeNode = scene_->GetChild("RightWall" + level);
 		scene_->RemoveChild(removeNode);
+		removeNode = scene_->GetChild("Tree" + level);
+		scene_->RemoveChild(removeNode);
 	}
 	for (int i = 0; i < NUM_BOXES; i++) {
 		Node* removeNode = scene_->GetChild("Box" + level);
@@ -448,62 +436,193 @@ void MainScene::DeleteFloor(int level) {
 	for (int i = 0; i < NUM_CARROTS; i++) {
 		Node* removeNode = scene_->GetChild("Carrot" + level);
 		scene_->RemoveChild(removeNode);
+		removeNode = scene_->GetChild("Effects" + level);
+		scene_->RemoveChild(removeNode);
 	}
 	
 }
 
 void MainScene::CreateObstacles(ResourceCache* cache, int level) {
 
+	if (level == 0) {
+		int nr = 6;
+		for (unsigned i = 0; i < nr; ++i)
+		{
+			Node* objectNode = scene_->CreateChild("Obstacle" + level);
+			objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.0f, 40.0f + int(i * 60 / nr) + 100.0f * level));
+			std::cout << objectNode->GetPosition().z_ << std::endl;
+			//objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
+			//objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
+			StaticModel* object5 = objectNode->CreateComponent<StaticModel>();
+			object5->SetModel(cache->GetResource<Model>("bin/Data/Models/skala/Models/Skala_low_poly_B.mdl"));
+			object5->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
+			object5->SetCastShadows(true);
 
-	for (unsigned i = 0; i < NUM_BOXES; ++i)
-	{
-		Node* objectNode = scene_->CreateChild("Box" + level);
-		objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.0f, int(i * 100/NUM_BOXES) + 100.0f * level));
-		std::cout << objectNode->GetPosition().z_ << std::endl;
-		//objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
-		//objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
-		StaticModel* object5 = objectNode->CreateComponent<StaticModel>();
-		object5->SetModel(cache->GetResource<Model>("bin/Data/Models/skala/Models/Skala_low_poly_B.mdl"));
-		object5->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
-		object5->SetCastShadows(true);
+			RigidBody* body5 = objectNode->CreateComponent<RigidBody>();
+			body5->SetCollisionLayer(3);
+			// Bigger boxes will be heavier and harder to move
+			//body5->SetMass(20.0f);
+			CollisionShape* shape5 = objectNode->CreateComponent<CollisionShape>();
+			shape5->SetBox(Vector3::ONE);
+		}
+	}
+	else {
+		if (level % 5 && NUM_BOXES > 2) {
+			NUM_BOXES -= 1;
+		}
 
-		RigidBody* body5 = objectNode->CreateComponent<RigidBody>();
-		body5->SetCollisionLayer(3);
-		// Bigger boxes will be heavier and harder to move
-		//body5->SetMass(20.0f);
-		CollisionShape* shape5 = objectNode->CreateComponent<CollisionShape>();
-		shape5->SetBox(Vector3::ONE);
+		for (unsigned i = 0; i < NUM_BOXES; ++i)
+		{
+			int randObstacles = int(Round(Random(2.4f)));
+			if (prevObstaclesNr == 0 && randObstacles == 0) {
+				randObstacles = int(Round(Random(2.4f)));
+			}
+			std::cout << randObstacles << std::endl;
+			prevObstaclesNr = randObstacles;
+
+
+			if (randObstacles == 0) {
+				Node* deadTreeNode = scene_->CreateChild("Obstacle" + level);
+				deadTreeNode->SetPosition(Vector3(4.5, 0.2f, int(i * 100 / NUM_BOXES) + 100.0f * level));
+				deadTreeNode->SetRotation(Quaternion(0.0f, -90.0f, 0.0f));
+				//deadTreeNode->SetScale(Vector3(0.5f, 0.5f, 0.5f));
+				StaticModel* deadTree = deadTreeNode->CreateComponent<StaticModel>();
+				deadTree->SetModel(cache->GetResource<Model>("bin/Data/Models/dead_tree/tree.mdl"));
+				deadTree->SetMaterial(cache->GetResource<Material>("bin/Data/Models/dead_tree/bark.xml"));
+				deadTree->SetCastShadows(true);
+
+				RigidBody* deadTreeBody = deadTreeNode->CreateComponent<RigidBody>();
+				deadTreeBody->SetCollisionLayer(3);
+				// Bigger boxes will be heavier and harder to move
+				//deadTreeBody->SetMass(10.0f);
+				CollisionShape* deadTreeShape = deadTreeNode->CreateComponent<CollisionShape>();
+				deadTreeShape->SetTriangleMesh(deadTree->GetModel(), 0);
+
+			}
+			else if (randObstacles == 1) {
+
+				int randLine1 = int(Random(3.0f));
+				int randLine2 = int(Random(3.0f));
+				while (randLine1 == randLine2) {
+					randLine2 = int(Random(3.0f));
+				}
+
+				Node* objectNode = scene_->CreateChild("Obstacle" + level);
+				objectNode->SetPosition(Vector3((randLine1 - 1.0f) * 2.5, 0.0f, int(i * 100 / NUM_BOXES) + 100.0f * level));
+				std::cout << objectNode->GetPosition().z_ << std::endl;
+				//objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
+				//objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
+				StaticModel* object5 = objectNode->CreateComponent<StaticModel>();
+				object5->SetModel(cache->GetResource<Model>("bin/Data/Models/skala/Models/Skala_low_poly_B.mdl"));
+				object5->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
+				object5->SetCastShadows(true);
+
+				RigidBody* body5 = objectNode->CreateComponent<RigidBody>();
+				body5->SetCollisionLayer(3);
+				// Bigger boxes will be heavier and harder to move
+				//body5->SetMass(20.0f);
+				CollisionShape* shape5 = objectNode->CreateComponent<CollisionShape>();
+				shape5->SetBox(Vector3::ONE);
+
+				Node* objectNode2 = scene_->CreateChild("Obstacle" + level);
+				objectNode2->SetPosition(Vector3((randLine2 - 1.0f) * 2.5, 0.0f, int(i * 100 / NUM_BOXES) + 100.0f * level));
+				std::cout << objectNode2->GetPosition().z_ << std::endl;
+				//objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
+				//objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
+				StaticModel* object2 = objectNode2->CreateComponent<StaticModel>();
+				object2->SetModel(cache->GetResource<Model>("bin/Data/Models/skala/Models/Skala_low_poly_B.mdl"));
+				object2->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
+				object2->SetCastShadows(true);
+
+				RigidBody* body2 = objectNode2->CreateComponent<RigidBody>();
+				body2->SetCollisionLayer(3);
+				// Bigger boxes will be heavier and harder to move
+				//body5->SetMass(20.0f);
+				CollisionShape* shape2 = objectNode2->CreateComponent<CollisionShape>();
+				shape2->SetBox(Vector3::ONE);
+
+			}
+			else {
+				Node* objectNode = scene_->CreateChild("Obstacle" + level);
+				objectNode->SetPosition(Vector3((int(Random(3.0f)) - 1.0f) * 2.5, 0.0f, int(i * 100 / NUM_BOXES) + 100.0f * level));
+				std::cout << objectNode->GetPosition().z_ << std::endl;
+				//objectNode->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
+				//objectNode->SetScale(Vector3(1.5f, 1.5f, 0.2f));
+				StaticModel* object5 = objectNode->CreateComponent<StaticModel>();
+				object5->SetModel(cache->GetResource<Model>("bin/Data/Models/skala/Models/Skala_low_poly_B.mdl"));
+				object5->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
+				object5->SetCastShadows(true);
+
+				RigidBody* body5 = objectNode->CreateComponent<RigidBody>();
+				body5->SetCollisionLayer(3);
+				// Bigger boxes will be heavier and harder to move
+				//body5->SetMass(20.0f);
+				CollisionShape* shape5 = objectNode->CreateComponent<CollisionShape>();
+				shape5->SetBox(Vector3::ONE);
+			}
+		}
 	}
 }
 
 void MainScene::CreateCollectibles(ResourceCache* cache, int level) {
-	for (unsigned i = 0; i < NUM_CARROTS; ++i)
-	{
-		int randomPosX = int(Random(3.0f));
-		Node* carrotNode = scene_->CreateChild("Carrot" + level);
-		carrotNode->SetPosition(Vector3((randomPosX - 1.0f) * 2.5, 1.5f, int(i * 100 / NUM_CARROTS) + 100.0f * level));
-		carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
-		carrotNode->SetScale(0.2f);
-		StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
-		carrot->SetModel(cache->GetResource<Model>("bin/Data/Models/marchewka/Models/marchewka.mdl"));
-		carrot->SetMaterial(cache->GetResource<Material>("bin/Data/Models/marchewka/Materials/orange.xml"));
-		carrot->SetCastShadows(true);
+	if (level == 0) {
+		int nr = 9;
+		for (unsigned i = 0; i < nr; ++i)
+		{
+			int randomPosX = int(Random(3.0f));
+			Node* carrotNode = scene_->CreateChild("Carrot" + level);
+			carrotNode->SetPosition(Vector3((randomPosX - 1.0f) * 2.5, 1.5f, 10.0f + int(i * 90 / nr) + 100.0f * level));
+			carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
+			carrotNode->SetScale(0.2f);
+			StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
+			carrot->SetModel(cache->GetResource<Model>("bin/Data/Models/marchewka/Models/marchewka.mdl"));
+			carrot->SetMaterial(cache->GetResource<Material>("bin/Data/Models/marchewka/Materials/orange.xml"));
+			carrot->SetCastShadows(true);
 
-		RigidBody* carrotBody = carrotNode->CreateComponent<RigidBody>();
-		carrotBody->SetCollisionLayer(4);
-		carrotBody->SetTrigger(true);
-		CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
-		carrotShape->SetBox(Vector3::ONE);
-		
-		Node* efekt = scene_->CreateChild("Effects" + level);
-		efekt->SetPosition(Vector3((randomPosX - 1.0f) * 2.5, 0.0f, int(i * 100 / NUM_CARROTS) + 100.0f * level));
-		efekt->SetScale(Vector3(1.0f, 0.2f, 1.0f));
-		ParticleEmitter* emitter = efekt->CreateComponent<ParticleEmitter>();
-		emitter->SetEffect(cache->GetResource<ParticleEffect>("bin/Data/Particle/torch_fire.xml"));
+			RigidBody* carrotBody = carrotNode->CreateComponent<RigidBody>();
+			carrotBody->SetCollisionLayer(4);
+			carrotBody->SetTrigger(true);
+			CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
+			carrotShape->SetBox(Vector3::ONE);
 
-		StaticModel* object = efekt->CreateComponent<StaticModel>(LOCAL);
-	}	
+			Node* efekt = scene_->CreateChild("Effects" + level);
+			efekt->SetPosition(Vector3((randomPosX - 1.0f) * 2.5, 0.0f, 20.0f + int(i * 80 / nr) + 100.0f * level));
+			efekt->SetScale(Vector3(1.0f, 0.2f, 1.0f));
+			ParticleEmitter* emitter = efekt->CreateComponent<ParticleEmitter>();
+			emitter->SetEffect(cache->GetResource<ParticleEffect>("bin/Data/Particle/torch_fire.xml"));
 
+			StaticModel* object = efekt->CreateComponent<StaticModel>(LOCAL);
+		}
+	}
+	else {
+
+		for (unsigned i = 0; i < NUM_CARROTS; ++i)
+		{
+			int randomPosX = int(Random(3.0f));
+			Node* carrotNode = scene_->CreateChild("Carrot" + level);
+			carrotNode->SetPosition(Vector3((randomPosX - 1.0f) * 2.5, 1.5f, int(i * 100 / NUM_CARROTS) + 100.0f * level));
+			carrotNode->SetRotation(Quaternion(0.0f, 0.0f, 160.0f));
+			carrotNode->SetScale(0.2f);
+			StaticModel* carrot = carrotNode->CreateComponent<StaticModel>();
+			carrot->SetModel(cache->GetResource<Model>("bin/Data/Models/marchewka/Models/marchewka.mdl"));
+			carrot->SetMaterial(cache->GetResource<Material>("bin/Data/Models/marchewka/Materials/orange.xml"));
+			carrot->SetCastShadows(true);
+
+			RigidBody* carrotBody = carrotNode->CreateComponent<RigidBody>();
+			carrotBody->SetCollisionLayer(4);
+			carrotBody->SetTrigger(true);
+			CollisionShape* carrotShape = carrotNode->CreateComponent<CollisionShape>();
+			carrotShape->SetBox(Vector3::ONE);
+
+			Node* efekt = scene_->CreateChild("Effects" + level);
+			efekt->SetPosition(Vector3((randomPosX - 1.0f) * 2.5, 0.0f, int(i * 100 / NUM_CARROTS) + 100.0f * level));
+			efekt->SetScale(Vector3(1.0f, 0.2f, 1.0f));
+			ParticleEmitter* emitter = efekt->CreateComponent<ParticleEmitter>();
+			emitter->SetEffect(cache->GetResource<ParticleEffect>("bin/Data/Particle/torch_fire.xml"));
+
+			StaticModel* object = efekt->CreateComponent<StaticModel>(LOCAL);
+		}
+	}
 
 }
 void MainScene::CreateCharacter() {
@@ -572,22 +691,16 @@ void MainScene::GameOver(){
 	musicSource_->Stop();
 	scene_->SetUpdateEnabled(false);
 	gameOver_ = true;
+	gamePaused_ = true;
 	
 	//std::cout << character_->gameOver_ << std::endl;
 	UI* ui = GetSubsystem<UI>();
 
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	ui->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
-	gameOverText_ = new Text(context_);
-	gameOverText_->SetText("Game Over");
-	gameOverText_->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.ttf"), 80);
-	gameOverText_->SetColor(Color(1, 1, 1));
-	gameOverText_->SetHorizontalAlignment(HA_CENTER);
-	gameOverText_->SetVerticalAlignment(VA_CENTER);
-	GetSubsystem<UI>()->GetRoot()->AddChild(gameOverText_);
 
 	// Load UI content prepared in the editor and add to the UI hierarchy
-	SharedPtr<UIElement> layoutRoot = ui->LoadLayout(cache->GetResource<XMLFile>("bin/Data/UI/menuGry.xml"));
+	SharedPtr<UIElement> layoutRoot = ui->LoadLayout(cache->GetResource<XMLFile>("bin/Data/UI/playAgain.xml"));
 	ui->GetRoot()->AddChild(layoutRoot);
 	// Subscribe to button actions (toggle scene lights when pressed then released)
 
@@ -621,33 +734,6 @@ void MainScene::UpdateCollected() {
 	str.append(std::to_string(collected_));
 	String s(str.c_str(), str.size());
 	textCollectible_->SetText(s);
-}
-
-void MainScene::CreateNewObstacles() {
-	if (character_)
-	{
-		ResourceCache* cache = GetSubsystem<ResourceCache>();
-		Node* characterNode = character_->GetNode();
-
-		////////////////// Wodne szesciany
-		if (characterNode->GetPosition().z_ > 10 && characterNode->GetPosition().z_ < 11)
-		{
-
-			Node* objectNode2 = scene_->CreateChild("Boxx");
-			objectNode2->SetPosition(Vector3((int(Random(3.0f) - 1.0f))*3.0f - 3.0f, 1.75f, 40.0f));
-			//objectNode2->SetRotation(Quaternion(0.0f, 0.0f, 0.0f));
-			objectNode2->SetScale(1.5f);
-			StaticModel* object52 = objectNode2->CreateComponent<StaticModel>();
-			object52->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-			object52->SetMaterial(cache->GetResource<Material>("Materials/Water.xml"));
-			object52->SetCastShadows(true);
-
-		}
-
-		if (characterNode->GetPosition().z_ > 20) {
-			scene_->RemoveChild(scene_->GetChild("Boxx", true));
-		}
-	}
 }
 
 void MainScene::Collect() {
@@ -717,10 +803,6 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 		}
 
 
-		CreateNewObstacles();
-
-
-
 		// Clear previous controls
 		character_->controls_.Set(CTRL_FORWARD | CTRL_BACK | CTRL_LEFT | CTRL_RIGHT | CTRL_JUMP, false);
 
@@ -764,6 +846,7 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 				ResourceCache* cache = GetSubsystem<ResourceCache>();
 				if (gamePaused_ == false) {
 					gamePaused_ = true;
+					musicSource_->Stop();
 					scene_->SetUpdateEnabled(false);
 					//std::cout << character_->gameOver_ << std::endl;
 					
@@ -778,6 +861,7 @@ void MainScene::HandleUpdate(StringHash eventType, VariantMap& eventData)
 				}
 				else {
 					gamePaused_ = false;
+					PlayMusic(cache);
 					scene_->SetUpdateEnabled(true);
 					GetSubsystem<UI>()->GetRoot()->RemoveChild(gamePausedText_);
 				}

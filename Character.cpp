@@ -164,7 +164,7 @@ void Character::FixedUpdate(float timeStep)
 			{
 				body->ApplyImpulse(Vector3::UP * JUMP_FORCE);
 				okToJump_ = false;
-				animCtrl->PlayExclusive("bin/Data/Models/kach/jumping.ani", 0, false, 0.5f);
+				animCtrl->PlayExclusive("Models/kach/jumping.ani", 0, false, 0.5f);
 			}
 		}
 		else
@@ -175,19 +175,19 @@ void Character::FixedUpdate(float timeStep)
 
 	if (!onGround_)
 	{
-		animCtrl->PlayExclusive("bin/Data/Models/kach/jumping.ani", 0, false, 0.5f);
+		animCtrl->PlayExclusive("Models/kach/jumping.ani", 0, false, 0.5f);
 	}
 	else
 	{
 		if (softGrounded && !moveDir.Equals(Vector3::ZERO)) {
-			animCtrl->PlayExclusive("bin/Data/Models/kach/run2.ani", 0, true, 0.2f);
+			animCtrl->PlayExclusive("Models/kach/run2.ani", 0, true, 0.2f);
 		}
 		else
 		{
-			animCtrl->Stop("bin/Data/Models/kach/run2.ani", 0.2f);
+			animCtrl->Stop("Models/kach/run2.ani", 0.2f);
 		}
 		// Set walk animation speed proportional to velocity
-		animCtrl->SetSpeed("bin/Data/Models/kach/run2.ani", planeVelocity.Length() * 0.2f);
+		animCtrl->SetSpeed("Models/kach/run2.ani", planeVelocity.Length() * 0.2f);
 	}
 	// Reset grounded flag for next frame
 	onGround_ = false;

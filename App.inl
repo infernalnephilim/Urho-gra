@@ -116,10 +116,10 @@ void App::SetWindowTitleAndIcon()
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	Graphics* graphics = GetSubsystem<Graphics>();
 	// Ikonka na pasku tytulu
-	Image* icon = cache->GetResource<Image>("Textures/UrhoIcon.png");
+	Image* icon = cache->GetResource<Image>("Textures/UrhoIconCarrot.png");
 	graphics->SetWindowIcon(icon);
 	// Tytul okna
-	graphics->SetWindowTitle("Temple Run Urho3D");
+	graphics->SetWindowTitle("Carrot Run");
 }
 
 void App::CreateConsoleAndDebugHud()
